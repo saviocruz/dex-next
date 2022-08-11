@@ -8,7 +8,7 @@ import Content  from './Content';
 import Navbar  from './Navbar';
 
 import { loadAvailableTokens   } from   './lib/contracts';;
-import { loadAllOrders, loadOrders, myFilledOrdersSelector, myTotalOpenOrdersSelector, openOrders, orderBookSelector } from '../store/interactions/orders';
+import { loadAllOrders, loadOrders, myFilledOrdersSelector, myTotalOpenOrdersSelector, openOrders, orderBookSelector, priceChartSelector } from '../store/interactions/orders';
 import { loadBalances } from '../store/interactions/contracts';
 import { estadoInicialNFT, IEvents, IProp } from './lib/type';
 import Mensagem, { estadoInicialMensagem, IMensagem } from './Mensagem';
@@ -53,10 +53,12 @@ const Principal = () => {
 		const tokenPairs: any = await loadAvailableTokens(web3, pairsContract)
 		const tokenName: string = await    dados.token.methods.symbol().call() 
 	 
-		const [orders, myOrders, myFilledOrders] = await loadOrders(exchangeContract, dados.token, account )
+		const [orders, filledOrders, myOrders, myFilledOrders] = await loadOrders(exchangeContract, dados.token, account )
 	//	console.log(myFilledOrders)
-	//	console.log(dados.token)
+	//	console.log(dados.token),
 		const [etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] = await loadBalances(web3, exchangeContract, dados.token , account);
+
+		const priceChart: any =      priceChartSelector(filledOrders)
 
 		dados.etherBalance = etherBalance 
 		dados.exchangeEtherBalance = exchangeEtherBalance 
@@ -73,7 +75,8 @@ const Principal = () => {
 		dados.orderBook = orders
 		dados.myFilledOrders = myFilledOrders
 		dados.myOpenOrders = myOrders
-
+		dados.filledOrders =filledOrders
+		dados.priceChart = priceChart
 		dados.tokenPairs = tokenPairs
 		updateDados(dados)
 		setCarregado(true)

@@ -25,7 +25,8 @@ const renderOrder = (order: any, dados: IProp, events: IEvents) => {
 
                 <td> {order.formattedTimestamp}</td>
                 <td>{order.filled}</td>
-                <td><Button onClick={(e) => fillOrder(  order, dados, events)}>{order.orderFillAction}</Button></td>
+                <td>{order._user !== account && ( <Button onClick={(e) => fillOrder(  order, dados, events)}>{order.orderFillAction}</Button>)}
+                   </td>
             </tr>
         </OverlayTrigger>
     )
@@ -60,12 +61,12 @@ const OrderBook = ({ dados, events }: Props) => {
 
     return (
         <div  >
-            <div className="card bg-dark text-white">
+            <div className="card ">
                 <div className="card-header">
                     Livro de Ordens
                 </div>
                 <div className="card-body order-book">
-                    <table className="table table-dark table-sm small">
+                    <table className="table table-sm small">
                         {showOrderBook ? showOrderBook(dados, events) : <Spinner type="table" />}
                     </table>
                 </div>

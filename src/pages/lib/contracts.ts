@@ -1,8 +1,7 @@
 import Web3 from 'web3';
-import { ETHUnit } from './consts';
 import ERC20 from '../../abis/ERC20.json'
 import { AbiItem } from 'web3-utils';
-import { loadTokenAddress } from './loadContrats';
+import { ETHUnit } from './helpers';
 
 export const loadAvailableTokens = async (web3: Web3, pairs: any ) => {
   //  dispatch(availableTokensLoading());

@@ -34,15 +34,15 @@ export interface IProp {
 
   showOrderBook?: boolean;
   orderBook: any;
+  filledOrders: any;
   myFilledOrders: any;
   myOpenOrders: any;
   showMyFilledOrders: boolean;
   showMyOpenOrders: boolean;
-  //buyOrder: any; 
-  //sellOrder: any; 
   showBuyTotal: boolean; 
   showSellTotal: boolean;
   tokenPairs: any;
+  priceChart: any;
 }
 
 export const estadoInicialNFT = {
@@ -66,12 +66,15 @@ export const estadoInicialNFT = {
   sellPrice: 0,
   showOrderBook: false,
   orderBook:  {sellOrders: [],  buyOrders:[], canceledOrders:[]},
+  filledOrders: {},
   myFilledOrders: {},
   myOpenOrders: {},
   showMyFilledOrders: true,
   showMyOpenOrders: true,
-  buyOrder: {}, sellOrder: {}, showBuyTotal: true, showSellTotal: true,
-  tokenPairs: null
+  showBuyTotal: true,
+  showSellTotal: true,
+  tokenPairs: null,
+  priceChart: null
 };
 
 export interface IPropBalance {

@@ -19,25 +19,22 @@ export const loadToken  = async (web3: Web3) => {
     }
   }
   catch (err) {
-    window.alert("Token not deployed to current network");
+    window.alert("Token não publicado neste rede.");
   }
   return null;
 }
 
 export const loadTokenAddress  = async (web3: Web3, address: string) => {
   try {
-    let networkId = Object.keys(ERC20.networks)[0] as keyof typeof ERC20.networks;
-    const data = ERC20.networks[networkId];
-    console.log(data)
-    if (data) {
-      const tokenContract = new web3.eth.Contract(IERC20.abi  as unknown as AbiItem,  address);
+      
+      const tokenContract = new web3.eth.Contract(ERC20.abi  as unknown as AbiItem,  address);
       const tokenName = await tokenContract.methods.symbol().call();
       console.log('token adrres: ',address)
       return [tokenContract, address, tokenName];
-    }
+   
   }
   catch (err) {
-    window.alert("Token not deployed to current network");
+    window.alert("Token não publicado neste rede.");
   }
   return null;
 }
@@ -60,7 +57,7 @@ export const loadPairs  = async (web3: Web3) => {
     }
   }
   catch (err) {
-    window.alert("Token not deployed to current network");
+    window.alert("Contrato de pares não publicado neste rede.");
   }
   return null;
 }

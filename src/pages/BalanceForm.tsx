@@ -12,7 +12,7 @@ const BalanceForm = (props: any) => {
                         min="0"
                         placeholder={placeHolder} 
                         onChange={onChange}
-                        className="form-control form-control-sm bg-dark text-white"
+                        className="form-control form-control-sm "
                         required />
                 </div>
                 <div className="col-12 col-sm-auto pl-sm-0">

@@ -1,26 +1,8 @@
-/*
-import {tokenLoaded, 
-    exchangeLoaded, 
-    tokenBalanceLoaded, 
-    exchangeEtherBalanceLoaded, 
-    exchangeTokenBalanceLoaded, 
-    balancesLoaded, 
-    balancesLoading,
-    pairsLoaded,
-    availableTokensLoading,
-    availableTokensLoaded,
-    numberOfTokensLoaded,
-    tokenPairsLoaded
-} from '../actions';
-//import {etherBalanceLoaded} from '../actions';
-*/
 import { ETHER_ADDRESS } from '../../pages/lib/helpers';
 import { loadToken, loadExchange } from '../../pages/lib/loadContrats';
 import Web3 from 'web3';
-import { loadAvailableTokens } from '../../pages/lib/contracts';
-import { loadAccount, loadWeb3 } from '../../pages/lib/web3';
-import { ETHUnit } from '../../pages/lib/consts';
-import { AbiItem } from 'web3-utils';
+
+import { ETHUnit } from '../../pages/lib/helpers';
 import ERC20 from '../../abis/ERC20.json'
 import { IMsg, IProp, IPropBalance, msgInicial } from '../../pages/lib/type';
 
@@ -98,30 +80,38 @@ export function updateForm(hash: any, props: any) {
 }
 
 export const registerToken = async (pairs: any, exchange: any, account: string, address: string) => {
-    await pairs.add(address).send({ from: account });
+    await pairs.methods.add(address).send({ from: account });
 
     //  await exchange.methods.registerToken(address).send({ from: account })
 }
 
-export const queryRegisterToken = async (web3: any,  address: any) => {
+export const queryRegisterToken = async (web3: any, address: any) => {
 
     if (address.length < 42 || address.length > 42) {
         console.log('NOT A VALID ADDRESS')
     } else {
 
-        let token =   new web3.eth.Contract(ERC20.abi,  address);
+        let token = new web3.eth.Contract(ERC20.abi, address);
         console.log(token)
-        const rTokenSymbol = await token.methods. symbol().call()
-                            .then( (ret: any) =>
-                                {
-                                    console.log(ret)
-                                    return ret
-                                }
-                            )
-        
-        const rTokenName = await token.methods.name().call()
-        const rTokentotalSupply = await token.methods.totalSupply().call()
-        const rTokenDecimals = await token.methods.decimals().call()
+        let rTokenSymbol = ''
+        let rTokenName = ''
+        let rTokentotalSupply = ''
+        let rTokenDecimals = ''
+        try {
+            rTokenSymbol = await token.methods.symbol().call()
+                .then((ret: any) => {
+                    console.log(ret)
+                    return ret
+                } )
+            rTokenName = await token.methods.name().call()
+            rTokentotalSupply = await token.methods.totalSupply().call()
+            rTokenDecimals = await token.methods.decimals().call()
+        }
+        catch (err: any) {
+            window.alert("Este endereço não pertence a um token ERC20");
+            return;
+        }
+
         console.log(rTokenName)
         const data = {
             name: rTokenName,

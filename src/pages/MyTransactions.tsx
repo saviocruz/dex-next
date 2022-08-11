@@ -59,7 +59,7 @@ interface Props {
 const MyTransactions = ({ dados, updateDados }: Props) => {
 
   return (
-    <div className="card bg-transparent text-white">
+    <div className="card bg-transparent ">
       <div className="card-header">
         My Transactions
       </div>

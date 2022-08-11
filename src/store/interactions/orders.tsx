@@ -7,7 +7,9 @@ import { IMensagem } from '../../pages/Mensagem';
 
 export const loadAllOrders = async (exchange: any, token: any) => {
     // cacelled orders
+    console.log("cancelledOrdersOnToken1")
     const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: 0, toBlock: 'latest' })
+    console.log("cancelledOrdersOnToken2")
     //format cancelled orders
     const cancelledOrders = cancelStream.map((event: any) => event.returnValues)
     let cancelledOrderCount = 0
@@ -70,9 +72,10 @@ export const orderBookSelector = (orders: any) => {
     // Fetch buy orders
     const buyOrders = get(orders, 'buy', [])
     // Sort buy orders by token price
+    console.log(orders)
     orders = {
         ...orders,
-        buyOrders: buyOrders.sort((a: any, b: any) => b._tokenPrice - a._tokenPrice)
+        buyOrders: buyOrders.sort((a: any, b: any) => a.tokenPrice - b.tokenPrice)
     }
 
     // Fetch sell orders
@@ -80,7 +83,7 @@ export const orderBookSelector = (orders: any) => {
     // Sort sell orders by token price
     orders = {
         ...orders,
-        sellOrders: sellOrders.sort((a: any, b: any) => b._tokenPrice - a._tokenPrice)
+        sellOrders: sellOrders.sort((a: any, b: any) => b.tokenPrice - a.tokenPrice)
     }
     return orders
 }
@@ -88,6 +91,7 @@ export const myFilledOrdersSelector = (account: any, orders: any) => {
 
 
     // find our orders
+    console.log(orders)
     orders = orders.filter((o: any) => o._user === account || o._userFill === account)
     // sort by date ascending
     orders = orders.sort((a: any, b: any) => a._timestamp - b._timestamp)
@@ -140,7 +144,7 @@ const decorateOrder = (order: any) => {
         etherAmount: ether(etherAmount),
         tokenAmount: tokens(tokenAmount),
         tokenPrice,
-        formattedTimestamp: moment.unix(order._timestamp).format('h:mm:ss a D/M')
+        formattedTimestamp: moment.unix(order._timestamp).format('D/M h:mm:ss a ')
     })
 }
 
@@ -397,6 +401,8 @@ export const makeSellOrder = async (formInput: any, dados: IProp, updateDados: a
     const amountGive = web3.utils.toWei(formInput.sellAmount, 'ether');
 
     exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+
+    exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
         .on('transactionHash', (hash: any) => {
             console.log('transactionHash makeBuyOrder', hash)
         })
@@ -434,9 +440,12 @@ export async function loadOrders(exchangeContract: any, tokenContract: any, acco
     myOrders = myTotalOpenOrdersSelector(account, myOrders);
 
     let myFilledOrders: any = myFilledOrdersSelector(account, filledOrdersOnToken);
+
+    let filledOrdersDec = decorateFilledOrders(filledOrdersOnToken);
+
     //	console.log(account)
     //	console.log(filledOrdersOnToken)
-    return [orders, myOrders, myFilledOrders]
+    return [orders, filledOrdersDec, myOrders, myFilledOrders]
 }
 
 function gerarMensagem(msg: string, desc: string, dados: IProp, events: IEvents) {
@@ -455,4 +464,53 @@ function atualiza(hash: any, dados: any, events: IEvents) {
     dados.myOpenOrders = hash[1]
     dados.myFilledOrders = hash[2]
     events.updateDados(dados)
+}
+
+
+export const priceChartSelector = (filledOrders: any) => {
+    filledOrders = filledOrders.sort((a: any, b: any) => a._timestamp - b._timestamp)
+    let orders = filledOrders
+
+    // Decorate orders - add display attributes
+    orders = orders.map((o: any) => decorateOrder(o))
+    // Get last 2 order for final price & price change
+    let secondLastOrder, lastOrder
+    [secondLastOrder, lastOrder] = orders.slice(orders.length - 2, orders.length)
+    // get last order price
+    const lastPrice = get(lastOrder, 'tokenPrice', 0)
+    // get second last order price
+    const secondLastPrice = get(secondLastOrder, 'tokenPrice', 0)
+
+    return ({
+        lastPrice,
+        lastPriceChange: (lastPrice >= secondLastPrice ? '+' : '-'),
+        series: [{
+            data: buildGraphData(orders)
+        }]
+    })
+}
+
+
+const buildGraphData = (orders: any) => {
+    // Group the orders by hour for the graph
+    orders = groupBy(orders, (o) => moment.unix(o._timestamp).startOf('hour').format())
+    // Get each hour where data exists
+    const hours = Object.keys(orders)
+    // Build the graph series
+    const graphData = hours.map((hour) => {
+        // Fetch all the orders from current hour
+        const group = orders[hour]
+        // Calculate price values - open, high, low, close
+        const open = group[0] // first order
+        const high: any = maxBy(group, 'tokenPrice') // high price
+        const low: any = minBy(group, 'tokenPrice') // low price
+        const close = group[group.length - 1] // last order
+
+        return ({
+            x: new Date(hour),
+            y: [open.tokenPrice, high.tokenPrice, low.tokenPrice, close.tokenPrice]
+        })
+    })
+    console.log('GRAPH DATA : ', graphData)
+    return graphData
 }

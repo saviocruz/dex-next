@@ -33,10 +33,10 @@ const selectPairToken = async (tokenAddress: any, web3: any, exchange: any, acco
     updateDados(dados) 
 }
 
-const renderMenuItem = (token: any, props: any, updateDados: any) => {
+const renderMenuItem = (token: any, props: any, updateDados: any, key: any) => {
     const {web3, exchange, account} = props;
     return (
-        <Dropdown.Item key={token[0]} onClick={(e) => selectPairToken(token, web3, exchange, account, props, updateDados)} >{token[1]}/ETH</Dropdown.Item>
+        <Dropdown.Item key={key} onClick={(e) => selectPairToken(token, web3, exchange, account, props, updateDados)} >{token[1]}/ETH</Dropdown.Item>
     )
 }
 
@@ -61,7 +61,7 @@ const Navbar = ({ dados, updateDados }: Props) => {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            {dados.tokenPairs?.map((token: any) => renderMenuItem(token,  dados, updateDados))}
+                            {dados.tokenPairs?.map((token: any, key: anny) => renderMenuItem(token,  dados, updateDados, key))}
 
                         </Dropdown.Menu>
                     </Dropdown>

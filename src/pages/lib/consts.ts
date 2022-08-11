@@ -3,9 +3,8 @@ import Web3 from "web3";
 export const tokenLogo = '../eth-logo.png'
 export const ethLogo = '../token-logo.png'
 
-export const ETHER_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-export const ETHUnit: string | any | undefined = 'ether'
+
 
 export const tokensLogo = () => {
  

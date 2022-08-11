@@ -12,7 +12,7 @@ export interface IMensagem {
 export const estadoInicialMensagem= {
     msg: '',
     desc: '',
-    gas:  '',
+    gas:  0,
     show: false,
     setShow: null
   };

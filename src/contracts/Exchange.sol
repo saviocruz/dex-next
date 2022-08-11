@@ -90,7 +90,7 @@ contract Exchange is ReentrancyGuard  {
     
     function fillOrder(uint256 _id) public payable nonReentrant{
         //require order is valid, not filled or cancelled already
-        require(_id > 0 && _id <= orderCount, "Invalid order id");
+        require(_id > 0 && _id <= orderCount, "Numero de ordem invalida.");
         require(!orderCancelled[_id], "Order cancelled before fill");
         require(!orderFilled[_id], "Order filled already");
         //fetch order
@@ -103,7 +103,7 @@ contract Exchange is ReentrancyGuard  {
 
     function _trade(uint256 _id, address _user, address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) internal {
         //charge fees - taken from filler of order (msg.sender)
-        require(_amountGive > tokens[_tokenGive][_user], "Nao ha saldo do comprador");
+        require(_amountGive <= tokens[_tokenGive][_user], "Nao ha tokens suficiente do dono da ordem.");
 
         uint256 _feeAmount = _amountGet.mul(feePercent).div(100);
         //DO TRADE
@@ -135,7 +135,7 @@ contract Exchange is ReentrancyGuard  {
         //retrieve order
         _Order storage _order = orders[_id];
         //require user is owner of order
-        require(address(_order.user) == msg.sender, "Must be order user to cancel");
+        require(address(_order.user) == msg.sender, "Esta ordem so pod ser removida pelo criador.");
         //require valid order id
         require(_id == _order.id, "Not valid order id");
         //add to cancelled orders mapping
@@ -150,9 +150,9 @@ contract Exchange is ReentrancyGuard  {
     //deposit erc20 tokens
     function depositToken(address _tokenAddress, uint256 _amount) public {
         //don't allow ether deposits
-        require(_tokenAddress != ETHER, "Can't send ether to this function");
+        require(_tokenAddress != ETHER, "Nao e possivel enviar ETH nesta operacao.");
         //require this so we only continue if transfer occurs
-        require(IERC20(_tokenAddress).transferFrom(msg.sender, address(this), _amount), "Could not transfer");
+        require(IERC20(_tokenAddress).transferFrom(msg.sender, address(this), _amount), "Nao foi possivel transferir.");
         //add to balance
         tokens[_tokenAddress][msg.sender] = tokens[_tokenAddress][msg.sender].add(_amount);
         //emit event
@@ -162,13 +162,13 @@ contract Exchange is ReentrancyGuard  {
     //withdraw erc20 tokens
     function withdrawToken(address _tokenAddress, uint256 _amount) public {
         //dont allow ether
-        require(_tokenAddress != ETHER, "Token address not valid");
+        require(_tokenAddress != ETHER, "Nao e possivel enviar ETH nesta operacao.");
         //require balance to be greater than amount
-        require(tokens[_tokenAddress][msg.sender] >= _amount, "Not enough tokens");
+        require(tokens[_tokenAddress][msg.sender] >= _amount, "Nao ha tokens suficientes.");
         //subtract tokens
         tokens[_tokenAddress][msg.sender] = tokens[_tokenAddress][msg.sender].sub(_amount);
         //send tokens and require the transfer goes through
-        require(IERC20(_tokenAddress).transfer(msg.sender, _amount), "Could not transfer");
+        require(IERC20(_tokenAddress).transfer(msg.sender, _amount), "Nao foi possivel transferir.");
         //emit event
         emit Withdraw(_tokenAddress, msg.sender, _amount, tokens[_tokenAddress][msg.sender]);
     }
@@ -184,7 +184,7 @@ contract Exchange is ReentrancyGuard  {
     //withdraw ether
     function withdrawEther(uint256 _amount) public {
         //require balance to be greater than amount
-        require(tokens[ETHER][msg.sender] >= _amount, "Not enough ether");
+        require(tokens[ETHER][msg.sender] >= _amount, "Nao ha ETH suficiente");
         //subtract ether
         tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].sub(_amount);
         //send ether

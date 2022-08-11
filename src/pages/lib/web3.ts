@@ -7,7 +7,7 @@ declare global {
 }
 export const  loadWeb3 =  ()  => {
     const web3 = new Web3(ethereum );
-    //
+    window.web3 = web3
     if (!web3) {
       alert('Web3 nao carregou');
     }
