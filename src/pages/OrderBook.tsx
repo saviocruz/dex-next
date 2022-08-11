@@ -8,24 +8,24 @@ import { IEvents, IProp } from './lib/type';
 
  
 const renderOrder = (order: any, dados: IProp, events: IEvents) => {
-    const { exchange, token, account, web3 } = dados;
+    const {account} = dados;
     return (
         <OverlayTrigger key={order._id}
             overlay={
                 <Tooltip id={order._id}>
-                    {`Dono da ordem ${order._user}`}
+                    {`${order._user}`}
                 </Tooltip>
             } >
-            <tr key={order._id} className="order-book-order" >
-                <td>{order._id}</td>
+            <tr key={order._id} className="order-book-order" title={order._id} >
+                
                 <td>{order.tokenAmount}</td>
 
                 <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
                 <td>{order.etherAmount}</td>
 
-                <td> {order.formattedTimestamp}</td>
-                <td>{order.filled}</td>
-                <td>{order._user !== account && ( <Button onClick={(e) => fillOrder(  order, dados, events)}>{order.orderFillAction}</Button>)}
+                <td style={{fontSize: "12px"}}> {order.formattedTimestamp}</td>
+             
+                <td>{order._user !== account && ( <Button className='btn btn-sm' onClick={(e) => fillOrder(  order, dados, events)}>{order.orderFillAction}</Button>)}
                    </td>
             </tr>
         </OverlayTrigger>
@@ -40,10 +40,11 @@ const showOrderBook = (dados: any,events: IEvents) => {
         <tbody key={token.options.address}>
             {orderBook.sellOrders.map((order: any) => renderOrder(order, dados, events))}
             <tr>
-                <th>#ID</th>
                 <th>{tokenName}</th>
                 <th title='Preço'>{tokenName}/ETH</th>
                 <th>ETH</th>
+                <th>Data/hora</th>
+                <th>Opçao</th>
             </tr>
             {orderBook.buyOrders.map((order: any) => renderOrder(order, dados, events))}
 
@@ -60,13 +61,13 @@ interface Props {
 const OrderBook = ({ dados, events }: Props) => {
 
     return (
-        <div  >
-            <div className="card ">
+        <div className="vertical">
+            <div className="card bg-transparent text-white">
                 <div className="card-header">
                     Livro de Ordens
                 </div>
                 <div className="card-body order-book">
-                    <table className="table table-sm small">
+                    <table className="table bg-transparent text-white table-sm small">
                         {showOrderBook ? showOrderBook(dados, events) : <Spinner type="table" />}
                     </table>
                 </div>

@@ -1,12 +1,9 @@
 import React from 'react';
 import {Dropdown} from 'react-bootstrap';
- 
-//import {loadAccount, loadWeb3} from   './lib/web3';
-//import {  loadPairs, exchangeSelector} from '../store/interactions/contracts'; 
+
 import {  loadBalances, updateForm } from '../store/interactions/contracts';
-import { loadAllOrders, loadOrders, myTotalOpenOrdersSelector, openOrders, orderBookSelector } from '../store/interactions/orders';
-import { loadToken, loadPairs, loadExchange, loadTokenAddress } from './lib/loadContrats';
-import {loadTokenName,} from '../store/interactions/contracts'; 
+import { loadOrders } from '../store/interactions/orders';
+import { loadTokenAddress } from './lib/loadContrats';
 
 import { IProp } from './lib/type';
 
@@ -61,12 +58,12 @@ const Navbar = ({ dados, updateDados }: Props) => {
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu>
-                            {dados.tokenPairs?.map((token: any, key: anny) => renderMenuItem(token,  dados, updateDados, key))}
+                            {dados.tokenPairs?.map((token: any, key: any) => renderMenuItem(token,  dados, updateDados, key))}
 
                         </Dropdown.Menu>
                     </Dropdown>
                     </li>
-                    <li className="nav-item">
+                    <li className={"nav-item"}>
                         <a 
                             className="nav-link small"
                             href={'https://etherscan.io/address/' +  dados.account}

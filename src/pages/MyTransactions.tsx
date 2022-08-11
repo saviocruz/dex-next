@@ -59,9 +59,9 @@ interface Props {
 const MyTransactions = ({ dados, updateDados }: Props) => {
 
   return (
-    <div className="card bg-transparent ">
+    <div className="card bg-transparent text-white">
       <div className="card-header">
-        My Transactions
+        Minhas Transações
       </div>
       <div className="card-body">
         <Tabs defaultActiveKey="trades" className="text-white tabs">
@@ -69,11 +69,12 @@ const MyTransactions = ({ dados, updateDados }: Props) => {
             <table className="table bg-transparent text-white table-sm small">
               <thead>
                 <tr>
-                  <th>Time</th>
+                  <th>ID</th>
                   <th>
                     {dados.tokenName}
                   </th>
                   <th>{dados.tokenName}/ETH</th>
+                  <th>Time</th>
                 </tr>
               </thead> 
               {dados.showMyFilledOrders ? showMyFilledOrders(dados) : <Spinner type="table" />}
@@ -83,6 +84,7 @@ const MyTransactions = ({ dados, updateDados }: Props) => {
             <table className="table bg-transparent text-white table-sm small">
               <thead>
                 <tr>
+                  <th>ID</th>
                   <th>Amount</th>
                   <th>{dados.tokenName}/ETH</th>
                   <th>Cancel</th>

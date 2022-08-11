@@ -11,7 +11,7 @@ const showData = (dados: IProp, rtoken: any) => {
     return (
 
         <div className="col-12 col-sm-auto pl-sm-0 admin">
-            <table className="table  table-sm small">
+            <table className="table text-white table-sm small">
                 <tbody>
                     <tr>
                         <td className="text-right">Name:</td>
@@ -50,7 +50,7 @@ const Admin = ({ dados, events }: Props) => {
     }
 
     return (
-        <div className='popup'>
+        <div  >
             <div className='popupinner container '>
                 <h4 className="underline">Administration Panel</h4>
                 <h6>Token Registration</h6>
@@ -71,7 +71,7 @@ const Admin = ({ dados, events }: Props) => {
                                 placeholder='Contract Address'
                                 // we check token info
                                 onChange={(e: any) => buyOrderOnSubmit(e)}
-                                className="form-control form-control-sm bg-transparent "
+                                className="form-control form-control-sm bg-transparent text-white"
                                 required
                             />
                         </div>

@@ -41,8 +41,8 @@ const showForm = (props: IProp, events: IEvents ) => {
 
     }
     return (
-        <Tabs defaultActiveKey="buy"   id="tabBuy">
-            <Tab  title="Compra" eventKey="buy">
+        <Tabs defaultActiveKey="buy" className="bg-transparent  text-white" id="tabBuy">
+            <Tab className="bg-transparent " title="Compra" eventKey="buy">
                 <OrderForm
                     onSubmit={buyOrderOnSubmit}
                     amountOnChange={buyAmountChanged}
@@ -53,7 +53,7 @@ const showForm = (props: IProp, events: IEvents ) => {
                 />
                 {showBuyTotal ? <small>Total: {removeTrailingZeros(total.toFixed(18))} ETH</small> : null}
             </Tab>
-            <Tab  title="Venda" eventKey="sell">
+            <Tab className="bg-transparent " title="Venda" eventKey="sell">
                 <OrderForm
                     onSubmit={sellOrderOnSubmit}
                     amountOnChange={sellAmountChanged}
@@ -75,7 +75,7 @@ interface Props {
 
 const NewOrder = ({ dados, events  }: Props) => {
     return (
-        <div className="card ">
+        <div className="card bg-transparent text-white">
             <div className="card-header">
                 Criar Ordem Limite
             </div>

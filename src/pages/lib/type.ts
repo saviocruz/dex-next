@@ -1,13 +1,15 @@
+import { IMensagem } from "../Mensagem";
+
 export interface IEvents{
-  updateDados: any;
-  setResult: any;
-  setShow: any;
+  updateDados: (dados: IProp) => void;
+  setResult: (msg: IMensagem) => void;
+  setShow: (a: boolean) => void;
 }
 
-export interface inicialEvents{
-  updateDados: {},
-  setResult: {}
-  setShow: {}
+export const inicialEvents = {
+  updateDados: (dados: IProp) => {},
+  setResult: (msg: IMensagem)  =>   {},
+  setShow:  (a: boolean) =>   {true},
 } 
 export interface IProp {
   web3: any;

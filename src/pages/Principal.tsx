@@ -10,7 +10,7 @@ import Navbar  from './Navbar';
 import { loadAvailableTokens   } from   './lib/contracts';;
 import { loadAllOrders, loadOrders, myFilledOrdersSelector, myTotalOpenOrdersSelector, openOrders, orderBookSelector, priceChartSelector } from '../store/interactions/orders';
 import { loadBalances } from '../store/interactions/contracts';
-import { estadoInicialNFT, IEvents, IProp } from './lib/type';
+import { estadoInicialNFT, IEvents, inicialEvents, IProp } from './lib/type';
 import Mensagem, { estadoInicialMensagem, IMensagem } from './Mensagem';
 import Admin from './Admin';
 
@@ -18,7 +18,7 @@ const Principal = () => {
 	const [carregado, setCarregado] = useState(false)
 	const [account, setAccount] = useState<String>()
 	const [dados, updateDados] = useState<IProp>(estadoInicialNFT);
-	const [events, setEvents] = useState<IEvents>();
+	const [events, setEvents] = useState<IEvents>(inicialEvents);
 
 	const [result, setResult] = useState<IMensagem>(estadoInicialMensagem);
 	const [show, setShow] = useState(false);
@@ -80,23 +80,16 @@ const Principal = () => {
 		dados.tokenPairs = tokenPairs
 		updateDados(dados)
 		setCarregado(true)
-		let event = {updateDados: updateDados,setResult: setResult, setShow: setShow }
+		let event = {updateDados: updateDados, setResult: setResult, setShow: setShow }
 		setEvents(event)
 	}
 
-	const atualiza = async (dados: IProp) =>{
-		 
-		const [etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] =  await loadBalances(dados.web3, dados.exchange , dados.token , dados.account);
-		dados.tokenBalance = tokenBalance;
-    dados.exchangeTokenBalance = exchangeTokenBalance;
-    updateDados({...dados,[tokenBalance]: tokenBalance} ) 
-    updateDados({...dados,[exchangeTokenBalance]: exchangeTokenBalance} ) 
-		console.log(dados)
-	}
+	
 	return (
 		<div>
-			<Navbar dados={dados} updateDados={atualiza} />
+		
 			<Admin dados={dados} events={events} />
+			
 			{carregado ? <Content dados={dados}  events={events}/> : <div className="content">Carregando plataforma</div>}
 
 			<Mensagem msg={result.msg} desc={result.desc} gas={result.gas} show={show}  setShow={setShow}/>

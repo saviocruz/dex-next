@@ -48,8 +48,8 @@ const showForm = (props: IProp, myOrders: any )=> {
 
     return (
         <div>
-            <Tabs defaultActiveKey={"deposit"} id="deposit">
-                <Tab eventKey={"deposit"} title={"Depositar"} className={"bg-transparent"} >
+            <Tabs defaultActiveKey={"deposit"} id="deposit" className=" text-white">
+                <Tab eventKey={"deposit"} title={"Deposita"} className={"bg-transparent"} >
                     <BalanceTable hasHead={true} tokenName={"ETH"} walletAmount={etherBalance} exchangeAmount={exchangeEtherBalance} />
                     <BalanceForm
                         onSubmit={depositEtherSubmit}
@@ -66,7 +66,7 @@ const showForm = (props: IProp, myOrders: any )=> {
                         buttonText={"Depositar"}
                     />
                 </Tab>
-                <Tab eventKey={"withdraw"} title={"Resgatar"} className={"bg-dark"}>
+                <Tab eventKey={"withdraw"} title={"Resgata"} className={"bg-transparent"}>
                     <BalanceTable hasHead={true} tokenName={"ETH"} walletAmount={etherBalance} exchangeAmount={exchangeEtherBalance} />
                     <BalanceForm
                         onSubmit={withdrawEtherSubmit}
@@ -131,7 +131,7 @@ const Balance = ({ dados }: Props) => {
 	}
 
     return (
-        <div className="card  ">
+        <div className="card  bg-transparent text-white">
             <div className="card-header">
                 Saldos da Plataforma
             </div> 

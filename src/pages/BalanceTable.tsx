@@ -26,7 +26,7 @@ const tableHead = () => {
 const BalanceTable = (props: any ) => {
         const {hasHead, tokenName, walletAmount, exchangeAmount} = props;
         return (
-            <table className="table bg-transparent table-sm small">
+            <table className="table bg-transparent text-white "> 
                 {(hasHead) ? tableHead() : null}
                 <tbody>
                     {tableRow(tokenName, walletAmount, exchangeAmount)}
