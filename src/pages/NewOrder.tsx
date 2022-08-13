@@ -8,11 +8,10 @@ import { estadoInicialNFT, IEvents, IProp } from './lib/type';
 
 
 const showForm = (props: IProp, events: IEvents ) => {
-    const { web3, exchange, token, account, tokenName, showBuyTotal, showSellTotal } = props;
+    const { tokenName, showBuyTotal, showSellTotal } = props;
     const [formInput, updateFormInput] = useState<IProp>(estadoInicialNFT)
     const [total, setTotal] = useState<number>(0)
-    //const [order, serOrder] = useState<any>({})
-    //console.log(buyOrder)
+ 
 
     const buyAmountChanged = (e: any) => {
         formInput.buyAmount = e.target.value

@@ -26,8 +26,7 @@ const Content = ({ dados, events }: Props) => {
     const { updateDados } = events
 
     const atualiza = async (dados: IProp) => {
-
-        const [etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] = await loadBalances(dados.web3, dados.exchange, dados.token, dados.account);
+        const [ tokenBalance, exchangeTokenBalance] = await loadBalances(dados.web3, dados.exchange, dados.token, dados.account);
         dados.tokenBalance = tokenBalance;
         dados.exchangeTokenBalance = exchangeTokenBalance;
         updateDados({ ...dados, [tokenBalance]: tokenBalance })
@@ -41,7 +40,7 @@ const Content = ({ dados, events }: Props) => {
 
             <div className="vertical-split">
                 <Navbar dados={dados} updateDados={atualiza} />
-                <Balance dados={dados} />
+                <Balance dados={dados} events={events} />
                 <NewOrder dados={dados} events={events} />
             </div>
             <OrderBook dados={dados} events={events} />

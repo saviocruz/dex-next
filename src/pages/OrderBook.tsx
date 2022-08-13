@@ -32,7 +32,7 @@ const renderOrder = (order: any, dados: IProp, events: IEvents) => {
     )
 }
 
-const showOrderBook = (dados: any,events: IEvents) => {
+const showOrderBook = (dados: any, events: IEvents) => {
     //fetch key from props using ES6
     const { orderBook, tokenName, token } = dados;
     //console.log(orderBook)

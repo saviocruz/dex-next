@@ -50,7 +50,7 @@ const Admin = ({ dados, events }: Props) => {
     }
 
     return (
-        <div  >
+        <div className='popup'>  
             <div className='popupinner container '>
                 <h4 className="underline">Administration Panel</h4>
                 <h6>Token Registration</h6>

@@ -4,12 +4,14 @@ export interface IEvents{
   updateDados: (dados: IProp) => void;
   setResult: (msg: IMensagem) => void;
   setShow: (a: boolean) => void;
+  setCarregado: (a: boolean) => void;
 }
 
 export const inicialEvents = {
   updateDados: (dados: IProp) => {},
   setResult: (msg: IMensagem)  =>   {},
   setShow:  (a: boolean) =>   {true},
+  setCarregado:  (a: boolean) =>   {false},
 } 
 export interface IProp {
   web3: any;
@@ -17,6 +19,7 @@ export interface IProp {
   token:  any;
   pairs: any;
   account: string;
+  user: any;
   tokenName: any;
 
   etherBalance: number;
@@ -45,6 +48,8 @@ export interface IProp {
   showSellTotal: boolean;
   tokenPairs: any;
   priceChart: any;
+
+  showAdmin: boolean;
 }
 
 export const estadoInicialNFT = {
@@ -53,6 +58,7 @@ export const estadoInicialNFT = {
   token: null,
   pairs: null,
   account: "",
+  user: {admin: true },
   tokenName: "",
   etherBalance: 0,
   tokenBalance: 0,
@@ -76,7 +82,9 @@ export const estadoInicialNFT = {
   showBuyTotal: true,
   showSellTotal: true,
   tokenPairs: null,
-  priceChart: null
+  priceChart: null,
+
+  showAdmin: false
 };
 
 export interface IPropBalance {

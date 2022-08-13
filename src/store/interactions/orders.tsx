@@ -1,5 +1,5 @@
 import { ether, ETHER_ADDRESS, GREEN, RED, tokens } from '../../pages/lib/helpers';
-import { loadBalances, updateForm } from "./contracts";
+import { loadBalances } from "./contracts";
 import moment from 'moment'
 import { get, groupBy, reject, maxBy, minBy } from 'lodash'
 import { IEvents, IProp } from '../../pages/lib/type';
@@ -354,7 +354,6 @@ export const fillOrder = (order: any, dados: IProp, events: IEvents) => {
 }
 
 export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents) => {
-    const { updateDados, setResult, setShow } = events;
     const { exchange, token, web3, account } = dados
     const tokenGet = token.options.address;
     console.log(token.options.address)
@@ -448,17 +447,23 @@ export async function loadOrders(exchangeContract: any, tokenContract: any, acco
     return [orders, filledOrdersDec, myOrders, myFilledOrders]
 }
 
-function gerarMensagem(msg: string, desc: string, dados: IProp, events: IEvents) {
-    const { setResult, setShow, } = events;
-    const result = {
+export function gerarMensagem(msg: string, desc: string, dados: IProp, events: IEvents) {
+    const { setResult, setShow, setCarregado} = events;
+
+    const result: IMensagem = {
         msg: msg,
         desc: desc,
+        gas:  0,
+        show: true,
+        setShow: setShow,
+        setCarregado: setCarregado,
         data: dados
     }
     setResult(result)
     console.log(result)
     setShow(true)
 }
+
 function atualiza(hash: any, dados: any, events: IEvents) {
     dados.orderBook = hash[0]
     dados.myOpenOrders = hash[1]

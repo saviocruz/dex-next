@@ -10,6 +10,7 @@ contract Exchange is ReentrancyGuard  {
     using SafeMath for uint256;
 
     //vars
+    address public admin;
     address constant ETHER = address(0);
     address payable public feeAccount;
     uint256 public feePercent;
@@ -44,8 +45,21 @@ contract Exchange is ReentrancyGuard  {
     //constructor
     constructor (address  _feeAccount, uint256 _feePercent)  
      {
+        admin = msg.sender;
         feeAccount =  payable(_feeAccount);
         feePercent = _feePercent;
+    }
+
+    modifier onlyOwner {
+       require(msg.sender == admin);
+       _;
+    }
+    function isAdmin() public view  returns (bool){
+        if(admin == msg.sender){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     function fetchCanceledOrders() public view returns (_Order[] memory) {

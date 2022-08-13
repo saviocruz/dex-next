@@ -3,7 +3,7 @@ import React  from 'react';
 
 const BalanceForm = (props: any) => {
   
-        const {onSubmit, placeHolder, onChange, buttonText} =  props;
+        const {onSubmit, placeHolder, onChange, buttonText, value} =  props;
         return (
             <form className="row" onSubmit={onSubmit}>
                 <div className="col-12 col-sm pr-sm-2">
@@ -12,6 +12,7 @@ const BalanceForm = (props: any) => {
                         min="0"
                         placeholder={placeHolder} 
                         onChange={onChange}
+                        value={value ||""}
                         className="form-control form-control-sm bg-transparent text-white"
                         required />
                 </div>

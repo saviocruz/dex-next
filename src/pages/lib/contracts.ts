@@ -3,7 +3,7 @@ import ERC20 from '../../abis/ERC20.json'
 import { AbiItem } from 'web3-utils';
 import { ETHUnit } from './helpers';
 
-export const loadAvailableTokens = async (web3: Web3, pairs: any ) => {
+export const loadAvailableTokens = async (web3: Web3, pairs: any) => {
   //  dispatch(availableTokensLoading());
 
   const numberOfTokens = await pairs.methods.size().call();
@@ -13,8 +13,8 @@ export const loadAvailableTokens = async (web3: Web3, pairs: any ) => {
   let tokenPairs = [];
   for (let i = 0; i < numberOfTokens; i++) {
     let tokenAddress = await pairs.methods.addresses(i).call();
-    let token = new web3.eth.Contract(ERC20.abi   as unknown as AbiItem, tokenAddress);
-   //  let [token]: any = await loadTokenAddress(web3, tokenAddress)
+    let token = new web3.eth.Contract(ERC20.abi as unknown as AbiItem, tokenAddress);
+    //  let [token]: any = await loadTokenAddress(web3, tokenAddress)
     let name = await token.methods.symbol().call();
 
     tokenPairs.push([tokenAddress, name]);
@@ -31,7 +31,7 @@ export const getUserInfo = async (credencialContract: any, endereco: string) => 
   return autor;
 }
 
-export const loadUser = async (credencialContract: any, id: number) => {
+export const loadCredencial = async (credencialContract: any, id: number) => {
   const ret = await credencialContract.methods.getUserInfo(id).call()
   console.log("Credencial", ret);
   return ret
@@ -44,7 +44,11 @@ export const loadListaCredencial = async (credencialContract: any) => {
   return data;
 }
 
-
+export const isAdmin = async (exchange: any, account: any) => {
+  //Checking if user is contract owner
+  const admin = await exchange.methods.isAdmin().call({ from: account })
+  return admin
+}
 
 export const loadSaldoSwap = async (account: string,
   web3: Web3,
