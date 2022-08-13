@@ -1,4 +1,4 @@
-Este projeto [Next.js](https://nextjs.org/) project iniciado with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Este projeto [Next.js](https://nextjs.org/) foi construído  com [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Inicio
 
@@ -6,19 +6,19 @@ Rode o projeto
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
 ```
 
-Abrir em [http://localhost:3000](http://localhost:3000) com seu browser preferido.
+Abrir em [http://localhost:3000](http://localhost:3000) com seu navegador preferido.
 
 ## Informações
 
-Este projeto está sendo contruído com várias DEX experimentais
+Este projeto está sendo construído baseado em alguns modelos de DEX para fins experimentais.
   - DEX Compra e venda de tokens diretamente
-  - DEX com depoisito na plataforma e livro de ordens LIMIT
+  - DEX Depósito na exchange para criar ordens LIMIT
   - DEX com livro de ordens MARKET e LIMIT
-  - DEX com pool de liquidez, V1, V2, V3
-  - NFT, Stake, Farming 
+  - DEX baseada em pool de liquidez: V1, V2, V3
+  - NFT, Market Place, Stake, Farming 
  
-Mais detalhes acompanhe o deenvolvimento
+Mais detalhes acompanhe o deenvolvimento...
