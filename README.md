@@ -22,3 +22,17 @@ Este projeto está sendo construído baseado em alguns modelos de DEX para fins 
   - NFT, Market Place, Stake, Farming 
  
 Mais detalhes acompanhe o deenvolvimento...
+
+Tarefas:
+
+    [X] Exchange compra direta
+    [X] Exchange ordem LIMIT
+    [ ] Exchange ordem LIMIT e MARKET
+    [ ] Dex Pool liquidez
+    [ ] Uniswap V1
+    [ ] Uniswap V2
+    [ ] AMM
+    [X] NFT
+    [X] Market Place
+    [ ] Stake
+    [ ] Farming
