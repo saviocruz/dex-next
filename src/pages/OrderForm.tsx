@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React  from 'react';
 
 const OrderForm = (props: any) => {
 
@@ -7,8 +7,9 @@ const OrderForm = (props: any) => {
         priceOnChange,
         buttonText,
         buyOrSell,
-        tokenName
-    } = props;
+        tokenName,
+        ultimoPreco
+    } = props;   
     return (
         <form onSubmit={onSubmit}>
             <div className="form-group small">
@@ -19,6 +20,7 @@ const OrderForm = (props: any) => {
                         min="0"
                         placeholder="quantidade"
                         onChange={amountOnChange}
+                        
                         className="form-control form-control-sm bg-transparent  text-white"
                         required />
                 </div>
@@ -31,6 +33,7 @@ const OrderForm = (props: any) => {
                         min="0"
                         placeholder="preço"
                         onChange={priceOnChange}
+                        value={ultimoPreco}
                         className="form-control form-control-sm bg-transparent  text-white"
                         required />
                 </div>

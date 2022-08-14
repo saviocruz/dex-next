@@ -5,19 +5,7 @@ import Web3 from 'web3';
 import { ETHUnit } from '../../pages/lib/helpers';
 import ERC20 from '../../abis/ERC20.json'
 import { IEvents, IMsg, IProp, IPropBalance, msgInicial } from '../../pages/lib/type';
-import { IMensagem } from '../../pages/Mensagem';
 import { gerarMensagem } from './orders';
-
-export const loadPairs = async (web3: Web3) => {
-    try {
-        const pairs: any = loadPairs(web3)
-        return pairs;
-    }
-    catch (err) {
-        window.alert("Pairs not deployed to the current network");
-    }
-    return null;
-}
 
 export const loadTokenName = async (web3: Web3) => {
     try {

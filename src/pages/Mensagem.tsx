@@ -6,8 +6,8 @@ export interface IMensagem {
     desc: string;
     gas: number;
     show: boolean;
-    setShow:  (a: boolean) => void ;
-    setCarregado:  (a: boolean) => void ;
+    setShow: (a: boolean) => void;
+    setCarregado: (a: boolean) => void;
     data: any;
 }
 
@@ -16,8 +16,8 @@ export const estadoInicialMensagem = {
     desc: '',
     gas: 0,
     show: false,
-    setShow:  (a: boolean) =>   {true},
-    setCarregado:  (a: boolean) =>   {true},
+    setShow: (a: boolean) => { true },
+    setCarregado: (a: boolean) => { true },
     data: {}
 };
 
@@ -28,7 +28,6 @@ const Mensagem = (result: IMensagem) => {
     const handleClose = () => {
         setShow(false);
         setCarregado(true)
-        console.log("fecha modal")
     }
 
     return (

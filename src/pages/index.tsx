@@ -8,23 +8,25 @@ import { loadAccount, loadWeb3 } from './lib/web3';
 import Web3 from 'web3';
 import { isAdmin } from './lib/contracts';
 import { loadExchange } from './lib/loadContrats';
-import { Spinner } from 'react-bootstrap';
+import Stack from './Stack';
+ 
 
 export interface INav {
   account: string;
   admin: boolean;
   carregado: boolean;
+  content: string;
 }
 const nav = {
   account: "",
   admin: false,
   carregado: false,
+  content: "<Principal/> "
 }
 
 const Home = () => {
   const [account, setAccount] = useState<String>()
-  const [admin, setAdmin] = useState<boolean>(false)
-  const [carregado, setCarregado] = useState<boolean>(false)
+ 
   const [dados, setDados] = useState<INav>(nav)
   useEffect(() => {
     loadWallet()
@@ -37,25 +39,28 @@ const Home = () => {
     const account: any = await loadAccount(web3)
     const [exchange]: any = await loadExchange(web3)
     let admin = await isAdmin(exchange, account[0])
- 
+    setDados({...dados, account: account[0]})
+    setDados({...dados, admin: admin})
+    setDados({...dados, carregado: true})
+    setDados({ ...dados, content: "Dex" })
     setDados ({  account: account[0],
-            admin: admin,
-            carregado: true,})
+      admin: admin,
+      carregado: true,
+      content: "Dex"})
   
 
   }
+ 
 
   return (
-
     <div >
       <main  >
-        <Navigator dados={dados} />
-    
-        {dados.carregado === true?  <Principal />  : <Spinner animation={'border'}   />}
+        <Navigator dados={dados}  setDados={setDados}/>
+        {dados.carregado === true? <Principal  nav={dados}  setDados={setDados} /> : null}
       </main>
-      
+    </div>  
 
-    </div>
+    
   )
 }
 

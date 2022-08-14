@@ -10,7 +10,7 @@ contract Pairs {
 
     event NewAddress(address indexed tokenAddress, string symbol, address user);
 
-    constructor ( ) public {
+    constructor ( )  {
         admin = msg.sender;
     }
 

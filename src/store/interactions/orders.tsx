@@ -1,5 +1,5 @@
 import { ether, ETHER_ADDRESS, GREEN, RED, tokens } from '../../pages/lib/helpers';
-import { loadBalances } from "./contracts";
+import { loadBalances, updateForm } from "./contracts";
 import moment from 'moment'
 import { get, groupBy, reject, maxBy, minBy } from 'lodash'
 import { IEvents, IProp } from '../../pages/lib/type';
@@ -8,7 +8,7 @@ import { IMensagem } from '../../pages/Mensagem';
 export const loadAllOrders = async (exchange: any, token: any) => {
     // cacelled orders
     console.log("cancelledOrdersOnToken1")
-    let bloc = 4000
+    let bloc = 4500
     const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: bloc, toBlock: 'latest' })
     console.log("cancelledOrdersOnToken2")
     //format cancelled orders
@@ -100,9 +100,9 @@ export const myFilledOrdersSelector = (account: any, orders: any) => {
 
 export const myTotalOpenOrdersSelector = (account: any, orders: any) => {
     // filter orders created by current account
-    
+
     orders = orders.filter((o: any) => o._user === account)
-   // orders = decorateOrder(orders)
+    // orders = decorateOrder(orders)
     orders = decorateFilledOrders(orders)
     orders = decorateOrderBookOrders(orders)
     return orders
@@ -269,8 +269,12 @@ export const loadCanceledOrders = async (exchange: any, token: any) => {
     }
 }
 
-export const cancelOrder = (exchange: any, token: any, order: any, account: any, props: any, updateDados: any) => {
-    exchange.methods.cancelOrder(order._id).send({ from: account })
+export const cancelOrder = ( order: any,   dados: IProp, events: IEvents, setCarregado: any) => {
+    const { exchange, token , account } = dados
+
+
+    console.log(events)
+    exchange.methods.cancelOrder(order._id).send({ from:   account })
         //only dispatch the redux action once the hash has come back from the blockchain
         .on('transactionHash', (hash: any) => {
             console.log('transactionHash cancelOrder', hash)
@@ -280,16 +284,22 @@ export const cancelOrder = (exchange: any, token: any, order: any, account: any,
         })
         .on('error', (error: any) => {
             console.log(error);
+            setCarregado(true)
             window.alert("There was an error");
+
         })
         .then(async (hash: any) => {
             console.log('then cancelOrder', hash)
-            const [orders, myOrders, myFilledOrders] = await loadOrders(exchange, token, account);
-            props.orderBook = orders
-            props.myOpenOrders = myOrders
-            props.myFilledOrders = myFilledOrders
-            console.log(props)
-            updateDados(props)
+            const [orders, filledOrders, myOrders, myFilledOrders] = await loadOrders(exchange, token, account);
+            dados.orderBook = orders
+            dados.myOpenOrders = myOrders
+            dados.filledOrders = filledOrders
+            dados.myFilledOrders = myFilledOrders
+            gerarMensagem('Operação completada',
+                'A ordem foi cancelada.',
+                dados, events, setCarregado)
+
+           //  updateDados(props)
         })
 }
 export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregado: any) => {
@@ -318,8 +328,8 @@ export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregad
     console.log('EVAL : ', amount > balance && order._tokenGet === ETHER_ADDRESS)
 
     if (amount > balance && order._tokenGet === ETHER_ADDRESS) {
-        gerarMensagem('Insuficient Balance', 
-            'Not enough Ether in your account to fill the order. Please deposit some Ether. Your curently have ' + balance + ' Ether on the exchange.', 
+        gerarMensagem('Insuficient Balance',
+            'Not enough Ether in your account to fill the order. Please deposit some Ether. Your curently have ' + balance + ' Ether on the exchange.',
             dados, events, setCarregado)
     } else if (amount > balance && order._tokenGet !== ETHER_ADDRESS) {
         gerarMensagem('Insuficient Balance', 'Not enough ' + tokenName + ' in your account to fill the order. Please deposit some ' + tokenName + '. Your curently have ' + balance + ' ' + tokenName + ' on the exchange.', dados, events, setCarregado)
@@ -342,8 +352,8 @@ export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregad
             .then(async (hash: any) => {
                 console.log('then fillOrder', hash.transactionHash)
                 //gerarMensagem('Ordem enviada', 'Aguarde confirmação: Foram enviados ' + amount, dados, events)
-                atualiza( dados, amount, events, setCarregado)
-                
+                atualiza(dados, amount, events, setCarregado)
+
             })
     }
 }
@@ -363,9 +373,9 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
     console.log(formInput.buyAmount * formInput.buyPrice)
     if ((formInput.buyAmount * formInput.buyPrice) > balance) {
         gerarMensagem('Saldo insuficiente',
-                        'Não há Ether suficiente em sua conta para executar a ordem. Deposite um pouco de Ether ou use uma quantia menor.'
-                        + ' Você tem atualmente ' + balance + ' Ether em sua conta.'
-                    , dados, events, setCarregado)
+            'Não há Ether suficiente em sua conta para executar a ordem. Deposite um pouco de Ether ou use uma quantia menor.'
+            + ' Você tem atualmente ' + balance + ' Ether em sua conta.'
+            , dados, events, setCarregado)
     } else {
         exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
             .on('transactionHash', (hash: any) => {
@@ -378,14 +388,14 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
             })
             .then(async (hash: any) => {
                 console.log('then makeBuyOrder', hash.transactionHash)
-                atualiza(dados, formInput.buyAmount, events,  setCarregado)
+                atualiza(dados, formInput.buyAmount, events, setCarregado)
 
             })
 
     }
 }
 
-export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvents,setCarregado: any) => {
+export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvents, setCarregado: any) => {
     const { exchange, token, web3, account } = dados
     const tokenGet = ETHER_ADDRESS;
     const amountGet = web3.utils.toWei((formInput.sellAmount * formInput.sellPrice).toFixed(18), 'ether');
@@ -399,7 +409,7 @@ export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvent
         gerarMensagem('Saldo insuficiente',
             'Não há token suficiente em sua conta para executar a ordem. Deposite um pouco de Ether ou use uma quantia menor.'
             + ' Você tem atualmente ' + balance + ' token em sua conta.'
-            , dados, events,  setCarregado)
+            , dados, events, setCarregado)
 
     } else {
         exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
@@ -408,16 +418,16 @@ export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvent
             })
             .on('error', (error: any) => {
                 console.log(error);
-                events.setCarregado(true)
+                setCarregado(true)
                 window.alert('Ocorreu um erro na ordem de venda');
             })
             .on('receipt', (hash: any) => {
                 console.log('receipt makeBuyOrder', hash.transactionHash)
             })
             .then(async (hash: any) => {
-                console.log('then makeBuyOrder', hash )
+                console.log('then makeBuyOrder', hash)
                 console.log(hash)
-                atualiza( dados, formInput.sellAmount, events, setCarregado)
+                atualiza(dados, formInput.sellAmount, events, setCarregado)
             });
 
     }
@@ -445,7 +455,7 @@ export async function loadOrders(exchangeContract: any, tokenContract: any, acco
 }
 
 export function gerarMensagem(msg: string, desc: string, dados: IProp, events: IEvents, setCarregado: any) {
-    const { setResult, setShow  } = events;
+    const { setResult, setShow } = events;
 
     const result: IMensagem = {
         msg: msg,
@@ -461,25 +471,40 @@ export function gerarMensagem(msg: string, desc: string, dados: IProp, events: I
 }
 
 function atualiza(dados: any, amount: any, events: IEvents, setCarregado: any) {
-    const { exchange, token, account } = dados;
+    const { web3, exchange, token, account } = dados;
     loadOrders(exchange, token, account)
-        .then( (hash: any)  => {
-            console.log(hash)
-            dados.orderBook = hash[0]
-            dados.myOpenOrders = hash[2]
-            dados.myFilledOrders = hash[3]
-           // events.updateDados(dados)
-            console.log("atualizou no then tb")
-
-            gerarMensagem('Ordem enviada', 'Verifique no livro de ordens: ' + amount, dados, events, setCarregado)
-
+        .then((orders: any) => {
+            dados.orderBook = orders[0]
+            dados.filledOrders = orders[1]
+            dados.myOpenOrders = orders[2]
+            dados.myFilledOrders = orders[3]
+            // events.updateDados(dados)
+            console.log(orders)
+            loadBalances(web3, exchange, token, account)
+                .then((balance: any) => {
+                    dados.etherBalance = balance[0]
+                    dados.exchangeEtherBalance = balance[1]
+                    dados.tokenBalance = balance[2]
+                    dados.exchangeTokenBalance = balance[3]
+                    
+                     priceChartSelector(orders[1])
+                     .then((priceChart: any) => {
+                        console.log(priceChart)
+                         dados.priceChart = priceChart
+                        gerarMensagem('Operação completada com sucesso.',
+                            'Valor operação ' + amount + ' Ether',
+                            dados,
+                            events, setCarregado)
+                    })
+ 
+                })
         });
 
 
 }
 
 
-export const priceChartSelector = (filledOrders: any) => {
+export  const priceChartSelector =  async (filledOrders: any) => {
     filledOrders = filledOrders.sort((a: any, b: any) => a._timestamp - b._timestamp)
     let orders = filledOrders
 
@@ -497,7 +522,7 @@ export const priceChartSelector = (filledOrders: any) => {
         lastPrice,
         lastPriceChange: (lastPrice >= secondLastPrice ? '+' : '-'),
         series: [{
-            data: buildGraphData(orders)
+            data: buildGraphData(orders) || null
         }]
     })
 }

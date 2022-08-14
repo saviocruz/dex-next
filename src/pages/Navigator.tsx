@@ -4,17 +4,17 @@ import Spinner from './Spinner'
 import Identicon from 'identicon.js';
 
 
-import { IProp } from './lib/type';
+import { IEvents, IProp } from './lib/type';
 import { INav } from '.';
 
-const showAdminPanel = ( dados: any) => {
-  
+const showAdminPanel = (dados: any) => {
+
   if (dados.admin === true) {
     return (
       <div className="admin-panel text-white text-xm">
         <button
           className="btn btn-primary btn-block btn-sm btn-custom"
-          onClick={() => (dados.admin = true )}>Admin</button>
+          onClick={() => (dados.admin = true)}>Admin</button>
       </div>
 
     )
@@ -25,9 +25,10 @@ const showAdminPanel = ( dados: any) => {
 
 interface Props {
   dados: INav;
+  setDados: any
 }
 
-const Navigator = ({ dados }: Props) => {
+const Navigator = ({ dados, setDados }: Props) => {
   const { account, admin, carregado } = dados
 
   var identiconOption = {
@@ -56,10 +57,17 @@ const Navigator = ({ dados }: Props) => {
         <Nav className="">
           <Nav.Link
 
-            onClick={() => alert('Dex')}>DEX</Nav.Link>
+            onClick={() => {
+              dados.content = "Dex"
+              setDados({ ...dados, content: "Dex" })
+            }}> DEX</Nav.Link>
 
           <Nav.Link
-            onClick={() => alert('Defi')}>DEFI {carregado}</Nav.Link>
+            onClick={() => {
+              dados.content = "Stack"
+              setDados({ ...dados, content: "Stack" })
+            } }>Staking</Nav.Link>
+
           <Nav.Link
             onClick={() => alert('Nft')}>NFT</Nav.Link>
         </Nav>
@@ -75,7 +83,7 @@ const Navigator = ({ dados }: Props) => {
 
 
       <div>
-        {carregado === true ? showAdminPanel( dados) : <Spinner type="table" />}
+        {carregado === true ? showAdminPanel(dados) : <Spinner type="table" />}
       </div>
     </Navbar>
 

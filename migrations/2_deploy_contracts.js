@@ -2,6 +2,7 @@ const MyERC20 = artifacts.require("MyERC20");
 const SecondERC20 = artifacts.require("SecondERC20");
 const Exchange = artifacts.require("Exchange");
 const Pairs = artifacts.require("Pairs");
+const Stacking = artifacts.require("Stacking");
 
 module.exports = async function(deployer) {
 	const accounts = await web3.eth.getAccounts();
@@ -20,6 +21,21 @@ module.exports = async function(deployer) {
 	token.transfer(account2,  doacao) 
 	let s = await token.balanceOf(feeAccount)
 	console.log(s);
+
+
+	await deployer.deploy(
+    Stacking, 
+    token.address,
+    feeAccount, // Your address where you get sushi tokens - should be a multisig
+    100, // Number of tokens rewarded per block, e.g., 100
+    40000, // Block number when token mining starts
+    80000 // Block when bonus ends
+    
+    );
+    const stacking = await Stacking.deployed()
+     await stacking.add(1, MyERC20.address, false)
+
+
 
 	let exchange =  await deployer.deploy(Exchange, feeAccount, feePercent);
 	let amount = web3.utils.toWei("1", 'ether') 
@@ -52,6 +68,9 @@ module.exports = async function(deployer) {
 	enviaOrdemVenda("4", "0.0021", account2)
 	enviaOrdemVenda("2", "0.0024", feeAccount)
 	enviaOrdemVenda("7", "0.0023", account1)
+	enviaOrdemVenda("8", "0.0025", account2)
+	enviaOrdemVenda("3", "0.0020", account1)
+	enviaOrdemVenda("10", "0.0029", account2)
 
 	async function enviaOrdem(buyAmount, buyPrice, account)
 	{

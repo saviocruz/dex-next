@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs, Tab } from 'react-bootstrap';
 import { makeBuyOrder, makeSellOrder } from '../store/interactions/orders';
 import OrderForm from './OrderForm';
@@ -7,12 +7,12 @@ import { removeTrailingZeros } from './lib/helpers';
 import { estadoInicialNFT, IEvents, IProp } from './lib/type';
 
 
-const showForm = (props: IProp, events: IEvents ) => {
+const showForm = (props: IProp, events: IEvents, ultimoPreco: number ) => {
     const { tokenName, showBuyTotal, showSellTotal } = props;
     const [formInput, updateFormInput] = useState<IProp>(estadoInicialNFT)
     const [total, setTotal] = useState<number>(0)
-
     const [carregado, setCarregado] = useState<boolean>(true)
+    
   //  events.setCarregado = setCarregado
    // events = {...events, setCarregado: setCarregado}
 
@@ -36,6 +36,7 @@ const showForm = (props: IProp, events: IEvents ) => {
         e.preventDefault();
         setCarregado(false)
         await makeBuyOrder(formInput, props,  events, setCarregado );
+        setTotal(formInput.sellPrice * formInput.sellAmount)
     }
 
     const sellOrderOnSubmit = async (e: any) => {
@@ -45,7 +46,9 @@ const showForm = (props: IProp, events: IEvents ) => {
 
     }
     if (!carregado) {
+         
         return   <Spinner />  
+        
     }
     else {
 
@@ -58,6 +61,7 @@ const showForm = (props: IProp, events: IEvents ) => {
                     priceOnChange={buyPriceChanged}
                     buttonText={"Ordem Compra"}
                     buyOrSell={"Compra"}
+                    ultimoPreco={ultimoPreco}
                     tokenName={tokenName}
                 />
                 {showBuyTotal ? <small>Total: {removeTrailingZeros(total.toFixed(18))} ETH</small> : null}
@@ -70,6 +74,7 @@ const showForm = (props: IProp, events: IEvents ) => {
                     buttonText={"Ordem Venda"}
                     buyOrSell={"Sell"}
                     tokenName={tokenName}
+                    ultimoPreco={ultimoPreco}
                 />
                 {showSellTotal ? <small>Total: {removeTrailingZeros((formInput?.sellAmount * formInput?.sellPrice).toFixed(18))} ETH</small> : null}
             </Tab>
@@ -82,13 +87,29 @@ interface Props {
     events: IEvents;
 }
 const NewOrder = ({ dados, events  }: Props) => {
+    const [ultimoPreco, setUltimoPreco] = useState<number>(0)
+    useEffect(() => {
+        let preco = loadWallet()
+        
+        
+    }, [])
+
+    async function loadWallet() {
+        const {orderBook } = dados;
+        const lastItem = orderBook.buyOrders[0]
+        let preco: number = lastItem._amountGive / lastItem._amountGet
+        console.log(preco)
+        setUltimoPreco(preco)
+        return preco
+    }
+
     return (
         <div className="card bg-transparent text-white">
             <div className="card-header">
                 Criar Ordem Limite
             </div>
             <div className="card-body">
-                {showForm ? showForm(dados, events ) : <Spinner type="div" />}
+                {showForm ? showForm(dados, events, ultimoPreco ) : <Spinner type="div" />}
             </div>
         </div>
     );

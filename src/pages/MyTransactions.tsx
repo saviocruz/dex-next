@@ -1,24 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 import Spinner from './Spinner'
 import { Tabs, Tab } from 'react-bootstrap'
 import { cancelOrder } from '../store/interactions/orders'
-import { IProp } from './lib/type'
+import { IEvents, IProp } from './lib/type'
 
 const showMyFilledOrders = (props: IProp) => {
-  
+
   const { myFilledOrders, account } = props
-   return (
+  return (
     <tbody>
       {myFilledOrders.map((order: any) => {
         return (
           <tr key={order._id} >
             <td className={`text-${order.orderTypeClass}`}>
-              {order._user === account && (<span>D </span> )}
-              {order._userFill === account && (<span>P </span> )}
+              {order._user === account && (<span>D </span>)}
+              {order._userFill === account && (<span>P </span>)}
               {order._id}
             </td>
-            
+
             <td className={`text-${order.orderTypeClass}`}>{order.orderSign}{order.tokenAmount}</td>
             <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
             <td className="text-muted">{order.formattedTimestamp}</td>
@@ -34,39 +34,47 @@ const showMyFilledOrders = (props: IProp) => {
   )
 }
 
-const showMyOpenOrders = (props: IProp, updateDados: any) => {
-  const { myOpenOrders,  exchange, token, account } = props
+const showMyOpenOrders = (dados: IProp, events: IEvents) => {
+  const { myOpenOrders, exchange, token, account } = dados
+  const [carregado, setCarregado] = useState<boolean>(true)
  
-  return (
-    <tbody>
-      {myOpenOrders.map((order: any) => {
-        return (
-          <tr key={order._id} title={order._user}>
-            <td className={`text-${order.orderTypeClass}`}>{order._id}</td>
-            <td className={`text-${order.orderTypeClass}`}>{order.tokenAmount}</td>
-            <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
-            <td className="text-muted">{order.formattedTimestamp}</td>
-            <td style={{color: "black"}}
-              className="cancel-order"
-              onClick={(e) => {
-                cancelOrder(exchange, token, order, account, props, updateDados)
-              }}
-            >&#8864;</td>
-          </tr>
-        )
-      })}
-    </tbody>
-  )
+  if (!carregado) {
+
+    return <Spinner />
+
+  }
+  else {
+    return (
+      <tbody>
+        {myOpenOrders.map((order: any) => {
+          return (
+            <tr key={order._id} title={order._user}>
+              <td className={`text-${order.orderTypeClass}`}>{order._id}</td>
+              <td className={`text-${order.orderTypeClass}`}>{order.tokenAmount}</td>
+              <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
+              <td className="text-muted">{order.formattedTimestamp}</td>
+              <td style={{ color: "black" }}
+                className="cancel-order"
+                onClick={(e) => {
+                  cancelOrder(order, dados, events, setCarregado)
+                }}
+              >&#8864;</td>
+            </tr>
+          )
+        })}
+      </tbody>
+    )
+  }
 }
 
 
 interface Props {
   dados: IProp;
-  updateDados: any;
+  events: IEvents;
 }
 
-const MyTransactions = ({ dados, updateDados }: Props) => {
-
+const MyTransactions = ({ dados, events }: Props) => {
+ 
   return (
     <div className="card bg-transparent text-white">
       <div className="card-header">
@@ -85,7 +93,7 @@ const MyTransactions = ({ dados, updateDados }: Props) => {
                   <th>{dados.tokenName}/ETH</th>
                   <th>Time</th>
                 </tr>
-              </thead> 
+              </thead>
               {dados.showMyFilledOrders ? showMyFilledOrders(dados) : <Spinner type="table" />}
             </table>
           </Tab>
@@ -99,7 +107,7 @@ const MyTransactions = ({ dados, updateDados }: Props) => {
                   <th>Cancel</th>
                 </tr>
               </thead>
-              {showMyOpenOrders ? showMyOpenOrders(dados, updateDados) : <Spinner type="table" />}
+              {showMyOpenOrders ? showMyOpenOrders(dados, events) : <Spinner type="table" />}
             </table>
           </Tab>
         </Tabs>
@@ -109,25 +117,7 @@ const MyTransactions = ({ dados, updateDados }: Props) => {
 
 }
 
-/*
-function mapStateToProps(state) {
-  const myOpenOrdersLoaded = myOpenOrdersLoadedSelector(state)
-  const orderCancelling = orderCancellingSelector(state)
-
-  return {
-    myFilledOrders: myFilledOrdersSelector(state),
-    showMyFilledOrders: myFilledOrdersLoadedSelector(state),
-    myOpenOrders: myOpenOrdersSelector(state),
-    showMyOpenOrders: myOpenOrdersLoaded && !orderCancelling,
-    exchange: exchangeSelector(state),
-    account: accountSelector(state),
-    symbol: tokenSymbolLoadedSelector(state),
-
-
-  }
-}
-*/
-export default  MyTransactions;
+export default MyTransactions;
 
 
 

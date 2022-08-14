@@ -1,12 +1,8 @@
-import React, { useEffect } from 'react'
+import React  from 'react'
 import dynamic from 'next/dynamic'
 import Spinner from './Spinner'
 import { chartOptions } from './PriceChart.config'
-
 import { IEvents, IProp } from './lib/type'
-
-
-
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const priceSymbol = (lastPriceChange: any) => {
@@ -26,8 +22,6 @@ interface Props {
 
 const PriceChart = ({ dados, events }: Props) => {
   const { tokenName, priceChart } = dados
-  console.log(priceChart)
-
   const showPriceChart = (priceChart: any) => {
 
 

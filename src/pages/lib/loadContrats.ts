@@ -50,6 +50,7 @@ export const loadPairs  = async (web3: Web3) => {
   try {
     let networkId = Object.keys(Pairs.networks)[0] as keyof typeof Pairs.networks;
     const data = Pairs.networks[networkId];
+    
     if (data) {
       const pairsContract = new web3.eth.Contract(Pairs.abi  as unknown as AbiItem, data.address);
       console.log('pairs adrres: ',data.address)
@@ -63,6 +64,23 @@ export const loadPairs  = async (web3: Web3) => {
 }
 
 export const loadExchange = async (web3: Web3) => {
+  try {
+    let networkId = Object.keys(Exchange.networks)[0] as keyof typeof Exchange.networks;
+    const data = Exchange.networks[networkId];
+    if (data) {
+      const exchangeContract: any = new web3.eth.Contract(Exchange.abi as unknown as AbiItem, data.address);
+      console.log('exchange: ', data.address)
+      return [exchangeContract, data.address];
+    }
+  }
+  catch (err) {
+    window.alert("Contrato Exchange não encontrado ");
+  }
+  return null;
+}
+
+
+export const loadStacking = async (web3: Web3) => {
   try {
     let networkId = Object.keys(Exchange.networks)[0] as keyof typeof Exchange.networks;
     const data = Exchange.networks[networkId];

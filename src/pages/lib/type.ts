@@ -21,7 +21,8 @@ export interface IProp {
   account: string;
   user: any;
   tokenName: any;
-
+  tokenPairs: any;
+  
   etherBalance: number;
   tokenBalance: number
   exchangeEtherBalance: number
@@ -43,10 +44,12 @@ export interface IProp {
   myFilledOrders: any;
   myOpenOrders: any;
   showMyFilledOrders: boolean;
+
   showMyOpenOrders: boolean;
   showBuyTotal: boolean; 
   showSellTotal: boolean;
-  tokenPairs: any;
+
+
   priceChart: any;
 
   showAdmin: boolean;

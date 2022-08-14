@@ -10,9 +10,7 @@ import { equal } from 'assert';
 
 const renderOrder = (order: any, dados: IProp, events: IEvents, carregado: boolean, setCarregado: any) => {
     const { account } = dados;
-
-    //events.setCarregado = setCarregado
-    // events = { ...events, setCarregado: setCarregado }
+ 
  
         return (
             <OverlayTrigger key={order._id}
@@ -48,15 +46,13 @@ const renderOrder = (order: any, dados: IProp, events: IEvents, carregado: boole
 const showOrderBook = (dados: any, events: IEvents) => {
 
     const { orderBook, tokenName, token } = dados;
-    const { account } = dados;
     const [carregado, setCarregado] = useState<boolean>(true)
-
-
+    
     return (
         <tbody key={token.options.address}>
             {orderBook.sellOrders.map((order: any) => renderOrder(order, dados, events, carregado, setCarregado))}
             <tr>
-                <th>OrderID</th>
+                <th>ID</th>
                 <th>{tokenName}</th>
                 <th title='Preço'>{tokenName}/ETH</th>
                 <th>ETH</th>

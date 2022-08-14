@@ -24,7 +24,7 @@ interface Props {
 }
 const Content = ({ dados, events }: Props) => {
     const { updateDados } = events
-
+ 
     const atualiza = async (dados: IProp) => {
         const [ tokenBalance, exchangeTokenBalance] = await loadBalances(dados.web3, dados.exchange, dados.token, dados.account);
         dados.tokenBalance = tokenBalance;
@@ -34,7 +34,7 @@ const Content = ({ dados, events }: Props) => {
         console.log(dados)
     }
 
-
+    console.log(dados)
     return (
         <div className="exchange" >
 
@@ -47,9 +47,8 @@ const Content = ({ dados, events }: Props) => {
             <OrderBook dados={dados} events={events} />
             </div>
             <div className="vertical-split">
-                <MyTransactions dados={dados} updateDados={events.updateDados} />
+                <MyTransactions dados={dados} events={events}/>
                 <PriceChart dados={dados} events={events} />
-
             </div>
             <Trades dados={dados} events={events} />
         </div>
