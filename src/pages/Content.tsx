@@ -43,7 +43,9 @@ const Content = ({ dados, events }: Props) => {
                 <Balance dados={dados} events={events} />
                 <NewOrder dados={dados} events={events} />
             </div>
+            <div   style={{minWidth: "400px" }}>
             <OrderBook dados={dados} events={events} />
+            </div>
             <div className="vertical-split">
                 <MyTransactions dados={dados} updateDados={events.updateDados} />
                 <PriceChart dados={dados} events={events} />

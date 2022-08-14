@@ -14,7 +14,7 @@ const selectPairToken = async (tokenAddress: any, web3: any, exchange: any, acco
         alert('Token not loaded, please load a network with token');
     }
  
-    const [orders, myOrders, myFilledOrders] = await loadOrders(exchange, token, account )
+    const [orders, filledOrdersDec, myOrders, myFilledOrders] = await loadOrders(exchange, token, account )
 
     const [etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] = await loadBalances(web3, exchange , token , account);
     dados.tokenName = tokenAddress[1]

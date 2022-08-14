@@ -8,7 +8,8 @@ import { IMensagem } from '../../pages/Mensagem';
 export const loadAllOrders = async (exchange: any, token: any) => {
     // cacelled orders
     console.log("cancelledOrdersOnToken1")
-    const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: 0, toBlock: 'latest' })
+    let bloc = 4000
+    const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: bloc, toBlock: 'latest' })
     console.log("cancelledOrdersOnToken2")
     //format cancelled orders
     const cancelledOrders = cancelStream.map((event: any) => event.returnValues)
@@ -22,7 +23,7 @@ export const loadAllOrders = async (exchange: any, token: any) => {
     });
     console.log("cancelledOrdersOnToken")
     // filled orders
-    const tradeStream = await exchange.getPastEvents('Trade', { fromBlock: 0, toBlock: 'latest' })
+    const tradeStream = await exchange.getPastEvents('Trade', { fromBlock: bloc, toBlock: 'latest' })
     const filledOrders = tradeStream.map((event: any) => event.returnValues)
     let filledOrderCount = 0
     let filledOrdersOnToken: any = []
@@ -34,7 +35,7 @@ export const loadAllOrders = async (exchange: any, token: any) => {
     });
     console.log("filledOrdersOnToken")
     //all orders
-    const orderStream = await exchange.getPastEvents('Order', { fromBlock: 0, toBlock: 'latest' })
+    const orderStream = await exchange.getPastEvents('Order', { fromBlock: bloc, toBlock: 'latest' })
     const allOrders = orderStream.map((event: any) => event.returnValues)
     let allOrderCount = 0
     let allOrdersOnToken: any = []
@@ -88,28 +89,23 @@ export const orderBookSelector = (orders: any) => {
     return orders
 }
 export const myFilledOrdersSelector = (account: any, orders: any) => {
-
-
     // find our orders
-    console.log(orders)
     orders = orders.filter((o: any) => o._user === account || o._userFill === account)
     // sort by date ascending
-    orders = orders.sort((a: any, b: any) => a._timestamp - b._timestamp)
+    orders = orders.sort((a: any, b: any) => b._timestamp - a._timestamp)
     // decorate orders - add display attribute
     orders = decorateMyFilledOrders(orders, account)
     return orders
-
-
 }
 
 export const myTotalOpenOrdersSelector = (account: any, orders: any) => {
     // filter orders created by current account
+    
     orders = orders.filter((o: any) => o._user === account)
-    //orders = decorateOrder(orders)
+   // orders = decorateOrder(orders)
     orders = decorateFilledOrders(orders)
     orders = decorateOrderBookOrders(orders)
     return orders
-
 }
 
 const decorateOrderBookOrders = (orders: any) => {
@@ -296,7 +292,7 @@ export const cancelOrder = (exchange: any, token: any, order: any, account: any,
             updateDados(props)
         })
 }
-export const fillOrder = (order: any, dados: IProp, events: IEvents) => {
+export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregado: any) => {
 
     const { exchange, token, web3, account, tokenName, exchangeEtherBalance, exchangeTokenBalance } = dados
     console.log(order)
@@ -322,39 +318,39 @@ export const fillOrder = (order: any, dados: IProp, events: IEvents) => {
     console.log('EVAL : ', amount > balance && order._tokenGet === ETHER_ADDRESS)
 
     if (amount > balance && order._tokenGet === ETHER_ADDRESS) {
-        gerarMensagem('Insuficient Balance', 'Not enough Ether in your account to fill the order. Please deposit some Ether. Your curently have ' + balance + ' Ether on the exchange.', dados, events)
+        gerarMensagem('Insuficient Balance', 
+            'Not enough Ether in your account to fill the order. Please deposit some Ether. Your curently have ' + balance + ' Ether on the exchange.', 
+            dados, events, setCarregado)
     } else if (amount > balance && order._tokenGet !== ETHER_ADDRESS) {
-        gerarMensagem('Insuficient Balance', 'Not enough ' + tokenName + ' in your account to fill the order. Please deposit some ' + tokenName + '. Your curently have ' + balance + ' ' + tokenName + ' on the exchange.', dados, events)
+        gerarMensagem('Insuficient Balance', 'Not enough ' + tokenName + ' in your account to fill the order. Please deposit some ' + tokenName + '. Your curently have ' + balance + ' ' + tokenName + ' on the exchange.', dados, events, setCarregado)
     } else {
-
-
         exchange.methods.fillOrder(order._id).send({ from: account })
             //only dispatch the redux action once the hash has come back from the blockchain
             .on('transactionHash', (hash: any) => {
                 console.log("transactionHash fillOrder")
+
             })
             .on('receipt', (hash: any) => {
-                loadBalances(web3, exchange, token, account);
+                console.log("receipt fillOrder")
             })
             .on('error', (error: any) => {
                 console.log(error);
+                events.setCarregado(true)
                 window.alert("There was an error");
             })
 
             .then(async (hash: any) => {
                 console.log('then fillOrder', hash.transactionHash)
-                gerarMensagem('Ordem enviada', 'Aguarde confirmação: Foram enviados ' + amount, dados, events)
-                await loadOrders(exchange, token, account)
-                    .then((hash: any) => {
-                        atualiza(hash, dados, events)
-                        gerarMensagem('Ordem confirmada', 'Verifique no livro de ordens: ' + amount, dados, events)
-                    });
+                //gerarMensagem('Ordem enviada', 'Aguarde confirmação: Foram enviados ' + amount, dados, events)
+                atualiza( dados, amount, events, setCarregado)
+                
             })
     }
 }
 
-export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents) => {
+export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents, setCarregado: any) => {
     const { exchange, token, web3, account } = dados
+    //const { setCarregado } = events
     const tokenGet = token.options.address;
     console.log(token.options.address)
     const amountGet = web3.utils.toWei(formInput.buyAmount, 'ether');
@@ -367,9 +363,9 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
     console.log(formInput.buyAmount * formInput.buyPrice)
     if ((formInput.buyAmount * formInput.buyPrice) > balance) {
         gerarMensagem('Saldo insuficiente',
-            'Não há Ether suficiente em sua conta para executar a ordem. Deposite um pouco de Ether ou use uma quantia menor.'
-            + ' Você tem atualmente ' + balance + ' Ether em sua conta.'
-            , dados, events)
+                        'Não há Ether suficiente em sua conta para executar a ordem. Deposite um pouco de Ether ou use uma quantia menor.'
+                        + ' Você tem atualmente ' + balance + ' Ether em sua conta.'
+                    , dados, events, setCarregado)
     } else {
         exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
             .on('transactionHash', (hash: any) => {
@@ -377,53 +373,54 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
             })
             .on('error', (error: any) => {
                 console.log(error);
+                setCarregado(true)
                 window.alert('Ocorreu um erro na ordem de compra');
             })
             .then(async (hash: any) => {
                 console.log('then makeBuyOrder', hash.transactionHash)
-                gerarMensagem('Ordem enviada', 'Aguarde confirmação: ' + amountGet, dados, events)
-                await loadOrders(exchange, token, account)
-                    .then((hash: any) => {
-                        atualiza(hash, dados, events)
-                        gerarMensagem('Ordem enviada', 'Verifique no livro de ordens: ' + amountGet, dados, events)
-                    });
+                atualiza(dados, formInput.buyAmount, events,  setCarregado)
+
             })
 
     }
 }
 
-export const makeSellOrder = async (formInput: any, dados: IProp, updateDados: any) => {
+export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvents,setCarregado: any) => {
     const { exchange, token, web3, account } = dados
     const tokenGet = ETHER_ADDRESS;
     const amountGet = web3.utils.toWei((formInput.sellAmount * formInput.sellPrice).toFixed(18), 'ether');
     const tokenGive = token.options.address;
     const amountGive = web3.utils.toWei(formInput.sellAmount, 'ether');
 
-    exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+    let decimals = await token.methods.decimals().call()
+    let balance = await exchange.methods.balanceOf(token.options.address, account).call() / (10 ** decimals)
+    const symbol = await token.methods.symbol().call()
+    if (formInput.sellAmount > balance) {
+        gerarMensagem('Saldo insuficiente',
+            'Não há token suficiente em sua conta para executar a ordem. Deposite um pouco de Ether ou use uma quantia menor.'
+            + ' Você tem atualmente ' + balance + ' token em sua conta.'
+            , dados, events,  setCarregado)
 
-    exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
-        .on('transactionHash', (hash: any) => {
-            console.log('transactionHash makeBuyOrder', hash)
-        })
-        .on('error', (error: any) => {
-            console.log(error);
-            window.alert('Ocorreu um erro na ordem de venda');
+    } else {
+        exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+            .on('transactionHash', (hash: any) => {
+                console.log('transactionHash makeBuyOrder', hash)
+            })
+            .on('error', (error: any) => {
+                console.log(error);
+                events.setCarregado(true)
+                window.alert('Ocorreu um erro na ordem de venda');
+            })
+            .on('receipt', (hash: any) => {
+                console.log('receipt makeBuyOrder', hash.transactionHash)
+            })
+            .then(async (hash: any) => {
+                console.log('then makeBuyOrder', hash )
+                console.log(hash)
+                atualiza( dados, formInput.sellAmount, events, setCarregado)
+            });
 
-
-        })
-        .on('receipt', (hash: any) => {
-            console.log('receipt makeBuyOrder', hash.transactionHash)
-
-        })
-        .then(async (hash: any) => {
-            console.log('then makeBuyOrder', hash.transactionHash)
-            const [orders, myOrders, myFilledOrders] = await loadOrders(exchange, token, account);
-            dados.orderBook = orders
-            dados.myOpenOrders = myOrders
-            dados.myFilledOrders = myFilledOrders
-            updateDados(dados)
-        });
-
+    }
 }
 
 
@@ -447,28 +444,38 @@ export async function loadOrders(exchangeContract: any, tokenContract: any, acco
     return [orders, filledOrdersDec, myOrders, myFilledOrders]
 }
 
-export function gerarMensagem(msg: string, desc: string, dados: IProp, events: IEvents) {
-    const { setResult, setShow, setCarregado} = events;
+export function gerarMensagem(msg: string, desc: string, dados: IProp, events: IEvents, setCarregado: any) {
+    const { setResult, setShow  } = events;
 
     const result: IMensagem = {
         msg: msg,
         desc: desc,
-        gas:  0,
+        gas: 0,
         show: true,
         setShow: setShow,
         setCarregado: setCarregado,
         data: dados
     }
     setResult(result)
-    console.log(result)
     setShow(true)
 }
 
-function atualiza(hash: any, dados: any, events: IEvents) {
-    dados.orderBook = hash[0]
-    dados.myOpenOrders = hash[1]
-    dados.myFilledOrders = hash[2]
-    events.updateDados(dados)
+function atualiza(dados: any, amount: any, events: IEvents, setCarregado: any) {
+    const { exchange, token, account } = dados;
+    loadOrders(exchange, token, account)
+        .then( (hash: any)  => {
+            console.log(hash)
+            dados.orderBook = hash[0]
+            dados.myOpenOrders = hash[2]
+            dados.myFilledOrders = hash[3]
+           // events.updateDados(dados)
+            console.log("atualizou no then tb")
+
+            gerarMensagem('Ordem enviada', 'Verifique no livro de ordens: ' + amount, dados, events, setCarregado)
+
+        });
+
+
 }
 
 

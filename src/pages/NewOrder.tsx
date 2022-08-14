@@ -11,7 +11,10 @@ const showForm = (props: IProp, events: IEvents ) => {
     const { tokenName, showBuyTotal, showSellTotal } = props;
     const [formInput, updateFormInput] = useState<IProp>(estadoInicialNFT)
     const [total, setTotal] = useState<number>(0)
- 
+
+    const [carregado, setCarregado] = useState<boolean>(true)
+  //  events.setCarregado = setCarregado
+   // events = {...events, setCarregado: setCarregado}
 
     const buyAmountChanged = (e: any) => {
         formInput.buyAmount = e.target.value
@@ -31,14 +34,21 @@ const showForm = (props: IProp, events: IEvents ) => {
     };
     const buyOrderOnSubmit = async (e: any) => {
         e.preventDefault();
-        await makeBuyOrder(formInput, props,  events );
+        setCarregado(false)
+        await makeBuyOrder(formInput, props,  events, setCarregado );
     }
 
     const sellOrderOnSubmit = async (e: any) => {
         e.preventDefault();
-        await makeSellOrder(formInput,  props, events);
+        setCarregado(false)
+        await makeSellOrder(formInput,  props, events, setCarregado);
 
     }
+    if (!carregado) {
+        return   <Spinner />  
+    }
+    else {
+
     return (
         <Tabs defaultActiveKey="buy" className="bg-transparent  text-white" id="tabBuy">
             <Tab className="bg-transparent " title="Compra" eventKey="buy">
@@ -65,13 +75,12 @@ const showForm = (props: IProp, events: IEvents ) => {
             </Tab>
         </Tabs>
     )
+    }
 }
 interface Props {
     dados: IProp;
     events: IEvents;
- 
 }
-
 const NewOrder = ({ dados, events  }: Props) => {
     return (
         <div className="card bg-transparent text-white">

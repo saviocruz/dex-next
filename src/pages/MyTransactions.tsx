@@ -7,17 +7,26 @@ import { IProp } from './lib/type'
 
 const showMyFilledOrders = (props: IProp) => {
   
-  const { myFilledOrders } = props
+  const { myFilledOrders, account } = props
    return (
     <tbody>
       {myFilledOrders.map((order: any) => {
         return (
-          <tr key={order._id} title={order._id}>
-            <td className={`text-${order.orderTypeClass}`}>{order._id}</td>
+          <tr key={order._id} >
+            <td className={`text-${order.orderTypeClass}`}>
+              {order._user === account && (<span>D </span> )}
+              {order._userFill === account && (<span>P </span> )}
+              {order._id}
+            </td>
             
             <td className={`text-${order.orderTypeClass}`}>{order.orderSign}{order.tokenAmount}</td>
             <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
             <td className="text-muted">{order.formattedTimestamp}</td>
+            <td className="text-muted">
+              <span title={order._user}> D </span>
+              <span title={order._userFill}> P </span>
+            </td>
+
           </tr>
         )
       })}

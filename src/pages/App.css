@@ -315,14 +315,13 @@ main{
     margin: auto;  
     border-radius: 20px;  
     background: #000000;  
-    border:1px solid  #ba277f;
+    border:1px solid  #77ccc8;
     z-index: 9999;
     display: block;
     padding:5px;
   }
   .popupinner > p{
       margin:10px;  
-    
   }
   .popupinner > h4{
     margin:10px;  

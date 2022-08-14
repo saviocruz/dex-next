@@ -38,7 +38,7 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
         setCarregado(false)
         events.setCarregado = setCarregado
         events = {...events, setCarregado: setCarregado}
-        await depositEther(props, formInput, events )
+        await depositEther(props, formInput, events, setCarregado )
 
     }
 
@@ -47,7 +47,7 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
         setCarregado(false)
         events.setCarregado = setCarregado
         events = {...events, setCarregado: setCarregado}
-        await depositToken(props, formInput, events);
+        await depositToken(props, formInput, events, setCarregado);
     }
 
     const withdrawEtherSubmit = async (e: any) => {
@@ -55,7 +55,7 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
         setCarregado(false)
         events.setCarregado = setCarregado
         events = {...events, setCarregado: setCarregado}
-        await withdrawEther(props, formInput, events, myOrders);
+        await withdrawEther(props, formInput, events, myOrders, setCarregado);
     }
 
     const withdrawTokenSubmit = async (e: any) => {
@@ -63,7 +63,7 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
         setCarregado(false)
         events.setCarregado = setCarregado
         events = {...events, setCarregado: setCarregado}
-        await withdrawToken(props, formInput, events, myOrders);
+        await withdrawToken(props, formInput, events, myOrders, setCarregado);
     }
 
     if (!carregado) {

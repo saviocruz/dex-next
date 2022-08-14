@@ -42,19 +42,16 @@ const Principal = () => {
 		loadNFTs(account[0])
 	}
 
-
 	async function loadNFTs(account: any) {
 		const web3: Web3 = loadWeb3()
 
 		const [exchangeContract]: any = await loadExchange(web3)
-		//const [tokenContract]: any = await loadToken(web3)
 		const [pairsContract]: any = await loadPairs(web3)
 		const tokenPairs: any = await loadAvailableTokens(web3, pairsContract)
 		const tokenName: string = await dados.token.methods.symbol().call()
 
 		const [orders, filledOrders, myOrders, myFilledOrders] = await loadOrders(exchangeContract, dados.token, account)
-		//	console.log(myFilledOrders)
-		//	console.log(dados.token),
+
 		const [etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] = await loadBalances(web3, exchangeContract, dados.token, account);
 
 		const priceChart: any = priceChartSelector(filledOrders)
@@ -67,16 +64,17 @@ const Principal = () => {
 		dados.account = account
 		dados.web3 = web3
 		dados.exchange = exchangeContract
-		//dados.token = tokenContract
 		dados.pairs = pairsContract
 		dados.tokenName = tokenName;
+		dados.tokenPairs = tokenPairs
 
 		dados.orderBook = orders
 		dados.myFilledOrders = myFilledOrders
 		dados.myOpenOrders = myOrders
 		dados.filledOrders = filledOrders
+
 		dados.priceChart = priceChart
-		dados.tokenPairs = tokenPairs
+		
 		updateDados(dados)
 		setCarregado(true)
 		let event: IEvents = { updateDados: updateDados, setResult: setResult, setShow: setShow,  setCarregado: setCarregado }
