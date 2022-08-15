@@ -34,7 +34,6 @@ const Content = ({ dados, events }: Props) => {
         console.log(dados)
     }
 
-    console.log(dados)
     return (
         <div className="exchange" >
 

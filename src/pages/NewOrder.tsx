@@ -12,16 +12,18 @@ const showForm = (props: IProp, events: IEvents, ultimoPreco: number ) => {
     const [formInput, updateFormInput] = useState<IProp>(estadoInicialNFT)
     const [total, setTotal] = useState<number>(0)
     const [carregado, setCarregado] = useState<boolean>(true)
-    
+    formInput.buyPrice = ultimoPreco;
   //  events.setCarregado = setCarregado
    // events = {...events, setCarregado: setCarregado}
 
     const buyAmountChanged = (e: any) => {
         formInput.buyAmount = e.target.value
+        
         setTotal(formInput.buyPrice * formInput.buyAmount)
     };
     const buyPriceChanged = (e: any) => {
         formInput.buyPrice = e.target.value
+     //   ultimoPreco =  e.target.value
         setTotal(formInput.buyPrice * formInput.buyAmount)
     };
     const sellAmountChanged = (e: any) => {
@@ -61,7 +63,7 @@ const showForm = (props: IProp, events: IEvents, ultimoPreco: number ) => {
                     priceOnChange={buyPriceChanged}
                     buttonText={"Ordem Compra"}
                     buyOrSell={"Compra"}
-                    ultimoPreco={ultimoPreco}
+                    ultimoPreco={formInput.buyPrice}
                     tokenName={tokenName}
                 />
                 {showBuyTotal ? <small>Total: {removeTrailingZeros(total.toFixed(18))} ETH</small> : null}

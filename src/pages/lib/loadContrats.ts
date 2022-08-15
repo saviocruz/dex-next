@@ -2,10 +2,11 @@ import MyERC20 from '../../abis/MyERC20.json'
 import Pairs from '../../abis/Pairs.json';
 import Exchange from '../../abis/Exchange.json'
 import ERC20 from '../../abis/ERC20.json'
-import IERC20 from '../../abis/IERC20.json'
+import Stacking from '../../abis/Stacking.json'
 
 import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
+import { Stack } from 'react-bootstrap';
 
 export const loadToken  = async (web3: Web3) => {
   try {
@@ -82,12 +83,12 @@ export const loadExchange = async (web3: Web3) => {
 
 export const loadStacking = async (web3: Web3) => {
   try {
-    let networkId = Object.keys(Exchange.networks)[0] as keyof typeof Exchange.networks;
-    const data = Exchange.networks[networkId];
+    let networkId = Object.keys(Stacking.networks)[0] as keyof typeof Stacking.networks;
+    const data = Stacking.networks[networkId];
     if (data) {
-      const exchangeContract: any = new web3.eth.Contract(Exchange.abi as unknown as AbiItem, data.address);
-      console.log('exchange: ', data.address)
-      return [exchangeContract, data.address];
+      const stackingContract: any = new web3.eth.Contract(Stacking.abi as unknown as AbiItem, data.address);
+      console.log('Stacking: ', data.address)
+      return [stackingContract, data.address];
     }
   }
   catch (err) {

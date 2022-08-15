@@ -4,7 +4,7 @@ const Exchange = artifacts.require("Exchange");
 const Pairs = artifacts.require("Pairs");
 const Stacking = artifacts.require("Stacking");
 
-module.exports = async function(deployer) {
+module.exports = async function (deployer) {
 	const accounts = await web3.eth.getAccounts();
 	const account1 = accounts[1];
 	const account2 = accounts[2];
@@ -17,44 +17,44 @@ module.exports = async function(deployer) {
 	await pairs.add(token2.address);
 
 	const doacao = web3.utils.toWei("100", 'ether');
-	token.transfer(account1,  doacao) 
-	token.transfer(account2,  doacao) 
+	token.transfer(account1, doacao)
+	token.transfer(account2, doacao)
 	let s = await token.balanceOf(feeAccount)
 	console.log(s);
 
 
 	await deployer.deploy(
-    Stacking, 
-    token.address,
-    feeAccount, // Your address where you get sushi tokens - should be a multisig
-    100, // Number of tokens rewarded per block, e.g., 100
-    40000, // Block number when token mining starts
-    80000 // Block when bonus ends
-    
-    );
-    const stacking = await Stacking.deployed()
-     await stacking.add(1, MyERC20.address, false)
+		Stacking,
+		token.address,
+		feeAccount, // Your address where you get sushi tokens - should be a multisig
+		100, // Number of tokens rewarded per block, e.g., 100
+		40000, // Block number when token mining starts
+		80000 // Block when bonus ends
 
+	);
+	const stacking = await Stacking.deployed()
+	await stacking.add(1000, MyERC20.address, false)
 
+	await idttoken.transferOwnership(Stacking.address)
 
-	let exchange =  await deployer.deploy(Exchange, feeAccount, feePercent);
-	let amount = web3.utils.toWei("1", 'ether') 
+	let exchange = await deployer.deploy(Exchange, feeAccount, feePercent);
+	let amount = web3.utils.toWei("1", 'ether')
 
-	await exchange. depositEther({value: amount })
-	let amountT = web3.utils.toWei("25", 'ether') 
+	await exchange.depositEther({ value: amount })
+	let amountT = web3.utils.toWei("25", 'ether')
 
-	await token.approve(exchange.address, amountT )
-	await exchange. depositToken(token.address, amountT )
+	await token.approve(exchange.address, amountT)
+	await exchange.depositToken(token.address, amountT)
 
- 	await exchange. depositEther( {value: amount , from: account1}) 
-	amountT = web3.utils.toWei("18", 'ether') 
-	await token.approve(exchange.address, amountT, {from: account1} )
-	await exchange. depositToken(token.address, amountT , {from: account1}) 
+	await exchange.depositEther({ value: amount, from: account1 })
+	amountT = web3.utils.toWei("18", 'ether')
+	await token.approve(exchange.address, amountT, { from: account1 })
+	await exchange.depositToken(token.address, amountT, { from: account1 })
 
- 	await exchange. depositEther( {value: amount ,  from: account2}) 
-	amountT = web3.utils.toWei("56", 'ether') 
-	await token.approve(exchange.address, amountT, {from: account2} )
-  await exchange. depositToken(token.address, amountT, {from: account2}) 
+	await exchange.depositEther({ value: amount, from: account2 })
+	amountT = web3.utils.toWei("56", 'ether')
+	await token.approve(exchange.address, amountT, { from: account2 })
+	await exchange.depositToken(token.address, amountT, { from: account2 })
 
 	const ETHER_ADDRESS = "0x0000000000000000000000000000000000000000";
 
@@ -72,19 +72,17 @@ module.exports = async function(deployer) {
 	enviaOrdemVenda("3", "0.0020", account1)
 	enviaOrdemVenda("10", "0.0029", account2)
 
-	async function enviaOrdem(buyAmount, buyPrice, account)
-	{
+	async function enviaOrdem(buyAmount, buyPrice, account) {
 		const amountGet = web3.utils.toWei(buyAmount, 'ether');
 		const tokenGive = ETHER_ADDRESS;
-		const amountGive = web3.utils.toWei((buyAmount *  buyPrice).toFixed(18), 'ether');
-		await exchange.makeOrder(token.address, amountGet, tokenGive, amountGive, { from: account }) 
+		const amountGive = web3.utils.toWei((buyAmount * buyPrice).toFixed(18), 'ether');
+		await exchange.makeOrder(token.address, amountGet, tokenGive, amountGive, { from: account })
 	}
 
-	async function enviaOrdemVenda(buyAmount, buyPrice, account)
-	{
+	async function enviaOrdemVenda(buyAmount, buyPrice, account) {
 		const amountGet = web3.utils.toWei(buyAmount, 'ether');
 		const tokenGive = ETHER_ADDRESS;
-		const amountGive = web3.utils.toWei((buyAmount *  buyPrice).toFixed(18), 'ether');
-		await exchange.makeOrder(tokenGive,amountGive, token.address,  amountGet, { from: account }) 
+		const amountGive = web3.utils.toWei((buyAmount * buyPrice).toFixed(18), 'ether');
+		await exchange.makeOrder(tokenGive, amountGive, token.address, amountGet, { from: account })
 	}
 };

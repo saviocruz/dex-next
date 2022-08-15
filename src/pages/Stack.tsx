@@ -4,13 +4,14 @@ import Spinner from './Spinner'
  
  
 import { IEvents, IProp } from './lib/type'
-import { stackToken, unStackToken } from '../store/interactions/stacking'
-
+import {  stackToken, unStackToken } from '../store/interactions/stacking'
+ 
 const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, stackAmount:any) => {
     const {web3,  myOpenOrders, exchange, token, account } = dados
     
     return (
         <div className="container text-center" >
+            saida
 
             {stacks.map((stack: any, index: number) => {
                 return (
@@ -91,24 +92,31 @@ interface Props {
     events: IEvents;
 }
 
+
+
 const Stack = ({ dados, events }: Props) => {
 
     const [myOrders, setMyOrders] = useState<any>();
-    const [stacking, setstacking] = useState<any>();
-    const [stacks, setstacks] = useState<any>();
-    const [stackAmount, setstackAmount] = useState<any>();
-
+  //  const [stacking, setStacking] = useState<any>();
+     const [stackAmount, setStackAmount] = useState<number>(0);
+     const { web3, account, stacks , stacking} = dados;
     useEffect(() => {
         loadWallet()
     }, [])
+    console.log(dados.stacks)
 
     async function loadWallet() {
         //   console.log(dados)
-        const { web3, account } = dados;
+        
 
-        let stacking: any
-        let stacks:any
-        let stackAmount:any
+      // let stacking = await loadStacking(web3)
+     //   console.log(stacking)
+       //  const stacking: any = await loadStackData(dados.stacks,  account)
+     //   console.log(stack)
+      //  let stackAmount =0 
+    //    setStacking(stacking)
+       //  setStackAmount(stackAmount)
+        
 /*
         const [exchangeContract]: any = await loadExchange(web3)
         const [tokenContract]: any = await loadToken(web3)
@@ -124,7 +132,7 @@ const Stack = ({ dados, events }: Props) => {
     
     return (
         <div>
-            { true ? showStack(dados, events, stacking, stacks, stackAmount ) : <Spinner />}
+            { true ? showStack(dados, events, dados.stacking, dados.stacks, stackAmount ) : <Spinner />}
 
         </div>
     )

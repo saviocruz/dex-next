@@ -18,11 +18,13 @@ export interface IProp {
   exchange: any;
   token:  any;
   pairs: any;
+
+  stacking: any;
   account: string;
   user: any;
   tokenName: any;
   tokenPairs: any;
-  
+
   etherBalance: number;
   tokenBalance: number
   exchangeEtherBalance: number
@@ -38,17 +40,18 @@ export interface IProp {
   sellAmount: number;
   sellPrice: number;
 
-  showOrderBook?: boolean;
+
   orderBook: any;
   filledOrders: any;
   myFilledOrders: any;
   myOpenOrders: any;
-  showMyFilledOrders: boolean;
+  stacks: any;
 
+  showOrderBook?: boolean;
+  showMyFilledOrders: boolean;
   showMyOpenOrders: boolean;
   showBuyTotal: boolean; 
   showSellTotal: boolean;
-
 
   priceChart: any;
 
@@ -60,6 +63,7 @@ export const estadoInicialNFT = {
   exchange: null,
   token: null,
   pairs: null,
+  stacking: null,
   account: "",
   user: {admin: true },
   tokenName: "",
@@ -80,6 +84,7 @@ export const estadoInicialNFT = {
   filledOrders: {},
   myFilledOrders: {},
   myOpenOrders: {},
+  stacks: {},
   showMyFilledOrders: true,
   showMyOpenOrders: true,
   showBuyTotal: true,

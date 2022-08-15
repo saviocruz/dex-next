@@ -33,7 +33,7 @@ export const loadStackData = async (stacking: any,  account: string) => {
   export const stackToken = async (stacking: any, token: any, account: any, amount: any, id: any, web3: any) => {
     console.log('START')
     const tokenx = new web3.eth.Contract(ERC20.abi, token)
-    amount = web3.utils.toWei(amount, 'ether')
+    amount = web3.utils.toWei(amount.toString(), 'ether')
     await tokenx.methods.approve(stacking.options.address, amount).send({ from: account })
       .on('transactionHash', async (hash: any) => {
         console.log('IS APPROVED')
