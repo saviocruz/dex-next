@@ -5,8 +5,8 @@ const tableRow = (tokenName: any, walletAmount: any, exchangeAmount: any) => {
     return (
         <tr>
             <th>{tokenName}</th>
-            <th>{walletAmount.toString()}</th>
-            <th>{exchangeAmount.toString()}</th>
+            <th>{walletAmount}</th>
+            <th>{exchangeAmount}</th>
         </tr>
     )
 }

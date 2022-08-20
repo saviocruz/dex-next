@@ -90,7 +90,7 @@ interface Props {
 }
 const NewOrder = ({ dados, events  }: Props) => {
     const [ultimoPreco, setUltimoPreco] = useState<number>(0)
-    useEffect(() => {
+    /*useEffect(() => {
         let preco = loadWallet()
         
         
@@ -99,12 +99,12 @@ const NewOrder = ({ dados, events  }: Props) => {
     async function loadWallet() {
         const {orderBook } = dados;
         const lastItem = orderBook.buyOrders[0]
-        let preco: number = lastItem._amountGive / lastItem._amountGet
+        let preco: number = lastItem?._amountGive / lastItem?._amountGet
         console.log(preco)
         setUltimoPreco(preco)
         return preco
     }
-
+*/
     return (
         <div className="card bg-transparent text-white">
             <div className="card-header">

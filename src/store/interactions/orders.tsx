@@ -7,10 +7,10 @@ import { IMensagem } from '../../pages/Mensagem';
 
 export const loadAllOrders = async (exchange: any, token: any) => {
     // cacelled orders
-    console.log("cancelledOrdersOnToken1")
-    let bloc = 4500
+  //  console.log("cancelledOrdersOnToken1")
+    let bloc = 5400
     const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: bloc, toBlock: 'latest' })
-    console.log("cancelledOrdersOnToken2")
+   // console.log("cancelledOrdersOnToken2")
     //format cancelled orders
     const cancelledOrders = cancelStream.map((event: any) => event.returnValues)
     let cancelledOrderCount = 0

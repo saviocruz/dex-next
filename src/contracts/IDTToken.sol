@@ -6,12 +6,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract IDTToken is ERC20, Ownable {
 
-
-
-
-    constructor()  ERC20("IDecentralize Token", "IDT") {
-        uint256 initialSupply = 1000000000000000000000;
-        _mint(msg.sender, initialSupply);
+    constructor()  ERC20("IDToken", "IDT") {
+         _mint(msg.sender, 1000000 * (10 ** uint256(decimals())));
     }
 
 

@@ -117,7 +117,7 @@ contract Stacking is Ownable {
         updatePool(_id);
         uint256 pending = stackers[_id][msg.sender]
             .mul(pool.accIDTPerShare)
-            .div(1e12);
+            .div(1e18);
         if (pending > 0) {
             safeIDTTransfer(msg.sender, pending);
         }
@@ -159,7 +159,7 @@ contract Stacking is Ownable {
         idt.mint(devAddress, idtReward.div(10));
         idt.mint(address(this), idtReward);
         pool.accIDTPerShare = pool.accIDTPerShare.add(
-            idtReward.mul(1e12).div(supply)
+            idtReward.mul(1e18).div(supply)
         );
         pool.lastRewardBlock = block.number;
     }
@@ -220,10 +220,10 @@ contract Stacking is Ownable {
                 .mul(pool.allocPoint)
                 .div(totalAllocPoint);
             accIDTPerShare = accIDTPerShare.add(
-                idtReward.mul(1e12).div(lpSupply)
+                idtReward.mul(1e18).div(lpSupply)
             );
         }
-        return stackers[_pid][msg.sender].mul(accIDTPerShare).div(1e12);
+        return stackers[_pid][msg.sender].mul(accIDTPerShare).div(1e18);
     }
 
     // EXTERNaL CALL TO ERC20 Contract
@@ -271,5 +271,44 @@ contract Stacking is Ownable {
     function getERCsymbol(address _token) public returns (string memory) {
         stk = MyERC20(_token);
         return stk.symbol();
+    }
+
+     function getLPSupply(uint256 _pid) public returns (uint256) {
+        PoolInfo memory pool = poolInfo[_pid];
+        stk = MyERC20(pool.tokenStack);
+        return stk.balanceOf(address(this));
+    }
+
+    function getLastRewardBlock(uint256 _pid) public view returns (uint256) {
+        PoolInfo memory pool = poolInfo[_pid];
+
+        return pool.lastRewardBlock;
+    }
+
+    function getMultiplierView(uint256 _pid) public view returns (uint256) {
+        PoolInfo memory pool = poolInfo[_pid];
+
+        if (block.number <= bonusEndBlock) {
+            return ((block.number - pool.lastRewardBlock) * BONUS_MULTIPLIER);
+        } else if (pool.lastRewardBlock >=  bonusEndBlock) {
+            return block.number - pool.lastRewardBlock;
+        } else {
+            return
+                (bonusEndBlock - pool.lastRewardBlock) *
+                BONUS_MULTIPLIER +
+                (block.number - bonusEndBlock);
+        }
+    }
+
+    function getAccIDTPerShare(uint256 _pid) public view returns (uint256) {
+        PoolInfo memory pool = poolInfo[_pid];
+        return pool.accIDTPerShare;
+    }
+
+    function getIdtReward(uint256 _pid) public view returns (uint256) {
+        PoolInfo memory pool = poolInfo[_pid];
+        uint256 idtReward = ((getMultiplierView(_pid) * idtPerBlock) *
+            pool.allocPoint) / totalAllocPoint;
+        return idtReward;
     }
 }

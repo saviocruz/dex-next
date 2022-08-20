@@ -53,10 +53,10 @@ export const loadBalances = async (web3: Web3, exchange: any, token: any, accoun
 
     const [etherBalance, exchangeEtherBalance] = await loadEtherBalances(web3, exchange, account);
     const [tokenBalance, exchangeTokenBalance] = await loadTokenBalances(web3, exchange, token, account)
-    parseFloat(web3.utils.fromWei(etherBalance, ETHUnit))
+    console.log(tokenBalance)
 
     return [parseFloat(web3.utils.fromWei(etherBalance, ETHUnit)), parseFloat(web3.utils.fromWei(exchangeEtherBalance, ETHUnit)),
-    parseFloat(web3.utils.fromWei(tokenBalance, ETHUnit)), parseFloat(web3.utils.fromWei(exchangeTokenBalance, ETHUnit))]
+    parseFloat(web3.utils.fromWei(tokenBalance, ETHUnit)) , parseFloat(web3.utils.fromWei(exchangeTokenBalance, ETHUnit))]
 }
 
 export function updateForm(hash: any, props: any) {
@@ -260,7 +260,7 @@ export const depositToken = async (dados: IProp, formInput: IPropBalance, events
                         window.alert("Erro ao executar token");
                     })
                     .then((hash: any) => {
-                        console.log(hash);
+                        console.log("then depositToken");
                         formInput.gas = hash.gasUsed;
                         atualiza(dados, formInput, events, setCarregado);
                     });

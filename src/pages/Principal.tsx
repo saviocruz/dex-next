@@ -58,9 +58,15 @@ const Principal = ({ nav, setDados }: any) => {
 
 		const priceChart: any = await priceChartSelector(filledOrders)
 
+		let bl = await web3.eth.getBlockNumber() 
+		console.log(bl)
+	//	var block = await web3.eth.getBlock('latest')
+		 
+		//console.log(block)
+ 
 
-		const [stacking] : any = await loadStacking(web3)
- 		const stacks: any = await loadStackData(stacking, account)
+		const [stacking]: any = await loadStacking(web3)
+		const stacks: any = await loadStackData(web3, stacking, account)
 		console.log(stacks)
 		dados.stacking = stacking
 		dados.stacks = stacks

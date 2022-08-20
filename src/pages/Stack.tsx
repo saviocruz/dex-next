@@ -4,14 +4,14 @@ import Spinner from './Spinner'
  
  
 import { IEvents, IProp } from './lib/type'
-import {  stackToken, unStackToken } from '../store/interactions/stacking'
+import {  getResult, stackToken, unStackToken } from '../store/interactions/stacking'
  
-const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, stackAmount:any) => {
+const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, stackAmount:any, setStackAmount: any) => {
     const {web3,  myOpenOrders, exchange, token, account } = dados
     
     return (
         <div className="container text-center" >
-            saida
+           
 
             {stacks.map((stack: any, index: number) => {
                 return (
@@ -37,18 +37,18 @@ const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, sta
 
                             <form onSubmit={(event) => {
                                 event.preventDefault()
-                                stackToken(stacking, stack.tokenStack, account, stackAmount, index, web3)
+                                stackToken(stacking, stack.tokenStack, account, stackAmount, index, web3, events)
                             }}>
                                 <div className="stack-form">
-                                    <div className="stack-pending">{parseInt(web3.utils.fromWei(stack.pending, 'ether')).toFixed(3)}</div>
-
+                                    <div className="stack-pending">{parseFloat(web3.utils.fromWei(stack.pending, 'kwei')).toFixed(3)}</div>
+ 
                                     <div className="stack-input">
                                         <input
                                             type="number"
                                             min="0.000000000000000001"
                                             step="0.000000000000000001"
                                             placeholder="Amount to stake"
-                                            onChange={(e) => alert( (e.target.value))}
+                                            onChange={(e) => setStackAmount( (e.target.value))}
                                             className="form-control form-control-sm "
                                             required
                                         />
@@ -69,7 +69,14 @@ const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, sta
                                             }
                                             }>Unstake</button>
                                     </div>
-
+                                    <div className="stack-btn">
+                                    <button className="btn btn-primary btn-block btn-sm btn-custom "
+                                            onClick={(event) => {
+                                                event.preventDefault()
+                                                getResult(stacking, account, index, web3)
+                                            }
+                                            }>supply</button>
+</div>
                                 </div>
 
                             </form>
@@ -103,7 +110,7 @@ const Stack = ({ dados, events }: Props) => {
     useEffect(() => {
         loadWallet()
     }, [])
-    console.log(dados.stacks)
+ 
 
     async function loadWallet() {
         //   console.log(dados)
@@ -132,7 +139,7 @@ const Stack = ({ dados, events }: Props) => {
     
     return (
         <div>
-            { true ? showStack(dados, events, dados.stacking, dados.stacks, stackAmount ) : <Spinner />}
+            { true ? showStack(dados, events, dados.stacking, dados.stacks, stackAmount, setStackAmount ) : <Spinner />}
 
         </div>
     )

@@ -3,7 +3,7 @@ import { IEvents, IProp   } from './lib/type'
 import Spinner from './Spinner'
 
 const showFilledOrders = (filledOrders: any) => {
-    console.log(filledOrders)
+   
     return (
         <tbody>
             {filledOrders.map((order: any) => {

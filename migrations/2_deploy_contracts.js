@@ -3,6 +3,8 @@ const SecondERC20 = artifacts.require("SecondERC20");
 const Exchange = artifacts.require("Exchange");
 const Pairs = artifacts.require("Pairs");
 const Stacking = artifacts.require("Stacking");
+const IDTToken = artifacts.require("IDTToken");
+ 
 
 module.exports = async function (deployer) {
 	const accounts = await web3.eth.getAccounts();
@@ -12,9 +14,12 @@ module.exports = async function (deployer) {
 	const feePercent = 10;
 	let token = await deployer.deploy(MyERC20);
 	let token2 = await deployer.deploy(SecondERC20);
+	let idt = await deployer.deploy(IDTToken);
+
 	let pairs = await deployer.deploy(Pairs);
 	await pairs.add(token.address);
 	await pairs.add(token2.address);
+	await pairs.add(idt.address);
 
 	const doacao = web3.utils.toWei("100", 'ether');
 	token.transfer(account1, doacao)
@@ -25,17 +30,17 @@ module.exports = async function (deployer) {
 
 	await deployer.deploy(
 		Stacking,
-		token.address,
+		idt.address,
 		feeAccount, // Your address where you get sushi tokens - should be a multisig
 		100, // Number of tokens rewarded per block, e.g., 100
-		40000, // Block number when token mining starts
-		80000 // Block when bonus ends
+		5530, // Block number when token mining starts
+		100000 // Block when bonus ends
 
 	);
 	const stacking = await Stacking.deployed()
-	await stacking.add(1000, MyERC20.address, false)
+	await stacking.add(100, MyERC20.address, false)
 
-	await idttoken.transferOwnership(Stacking.address)
+  await idt.transferOwnership(Stacking.address)
 
 	let exchange = await deployer.deploy(Exchange, feeAccount, feePercent);
 	let amount = web3.utils.toWei("1", 'ether')
