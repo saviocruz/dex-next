@@ -3,10 +3,10 @@ import Pairs from '../../abis/Pairs.json';
 import Exchange from '../../abis/Exchange.json'
 import ERC20 from '../../abis/ERC20.json'
 import Stacking from '../../abis/Stacking.json'
+import StakerContract from '../../abis/Staker.json'
 
 import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
-import { Stack } from 'react-bootstrap';
 
 export const loadToken  = async (web3: Web3) => {
   try {
@@ -93,6 +93,24 @@ export const loadStacking = async (web3: Web3) => {
   }
   catch (err) {
     window.alert("Contrato Market não encontrado ");
+  }
+  return null;
+}
+
+
+export const loadStakerContract  = async (web3: Web3) => {
+  try {
+    let networkId = Object.keys(StakerContract.networks)[0] as keyof typeof StakerContract.networks;
+    const data = StakerContract.networks[networkId];
+    if (data) {
+      const tokenContract = new web3.eth.Contract(StakerContract.abi  as unknown as AbiItem, data.address);
+   //  const name = await token.methods.symbol().call();
+      console.log('StakerContract adrres: ',data.address)
+      return [tokenContract, data.address];
+    }
+  }
+  catch (err) {
+    window.alert("Contrato não publicado neste rede.");
   }
   return null;
 }

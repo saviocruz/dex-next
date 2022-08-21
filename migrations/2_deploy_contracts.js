@@ -4,7 +4,10 @@ const Exchange = artifacts.require("Exchange");
 const Pairs = artifacts.require("Pairs");
 const Stacking = artifacts.require("Stacking");
 const IDTToken = artifacts.require("IDTToken");
- 
+
+var Staker = artifacts.require("Staker");
+var ERC20Factory = artifacts.require("ERC20Factory");
+var MockERC20 = artifacts.require("MockERC20");
 
 module.exports = async function (deployer) {
 	const accounts = await web3.eth.getAccounts();
@@ -77,6 +80,22 @@ module.exports = async function (deployer) {
 	enviaOrdemVenda("3", "0.0020", account1)
 	enviaOrdemVenda("10", "0.0029", account2)
 
+	await deployer.deploy(ERC20Factory);
+	const erc20factory = await ERC20Factory.deployed();
+	await erc20factory.createToken("Eat The Blocks", "ETB");
+	await erc20factory.createToken("LP ETB-BNB", "LPToken");
+	const tokens = await erc20factory.getTokens()
+	console.log(tokens);
+	const lpToken = await MockERC20.at(tokens[1]);
+	await lpToken.mint(accounts[1], web3.utils.toWei("1000000"));
+	await lpToken.mint(accounts[2], web3.utils.toWei("1000000"));
+
+
+	
+	depositToken = tokens[1];
+	rewardToken = tokens[0];
+	await deployer.deploy(Staker, depositToken, rewardToken);
+	
 	async function enviaOrdem(buyAmount, buyPrice, account) {
 		const amountGet = web3.utils.toWei(buyAmount, 'ether');
 		const tokenGive = ETHER_ADDRESS;

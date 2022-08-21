@@ -9,6 +9,7 @@ import Web3 from 'web3';
 import { isAdmin } from './lib/contracts';
 import { loadExchange } from './lib/loadContrats';
 import Stack from './Stack';
+import StakeTime from './StakeTime';
 
 
 export interface INav {
@@ -70,6 +71,7 @@ const Home = () => {
         <Navigator nav={nav} setNav={setNav} />
         {nav.content === 'Dex' && nav.carregado === true ? <Principal nav={nav} setNav={setNav} /> : null}
         {nav.content === 'Stake' && nav.carregado === true ? <Stack nav={nav} setNav={setNav} /> : null}
+        {nav.content === 'StakeTime' && nav.carregado === true ? <StakeTime nav={nav} setNav={setNav} /> : null}
 
       </main>
     </div>
