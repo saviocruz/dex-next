@@ -3,10 +3,9 @@ import { IEvents, IProp   } from './lib/type'
 import Spinner from './Spinner'
 
 const showFilledOrders = (filledOrders: any) => {
-   
-    return (
+     return (
         <tbody>
-            {filledOrders.map((order: any) => {
+            {filledOrders?.map((order: any) => {
                 return (
                     <tr className={`order-${order._id}`} key={order._id}>
                         <td className="text-muted">{order._id}</td> 
@@ -18,9 +17,7 @@ const showFilledOrders = (filledOrders: any) => {
             })}
         </tbody>
     )
-
 }
-
 
 interface Props {
     dados: IProp;
@@ -30,6 +27,7 @@ interface Props {
 const Trades = ({ dados, events }: Props) => {
     const { tokenName, filledOrders } = dados
 
+   
     return (
         <div className="vertical">
             <div className="card bg-transparent text-white">
@@ -46,7 +44,7 @@ const Trades = ({ dados, events }: Props) => {
                                 <th>Time</th>
                             </tr>
                         </thead>
-                        {showFilledOrders(filledOrders)  }
+                         {filledOrders.length > 0   ? showFilledOrders(dados.filledOrders ) : <Spinner type="table" />}
 
                     </table>
                 </div>

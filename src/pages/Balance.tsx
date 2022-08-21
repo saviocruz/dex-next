@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Tabs, Tab, Button } from 'react-bootstrap';
 import Spinner from './Spinner';
 
-import { depositEther, withdrawEther, depositToken, withdrawToken, } from '../store/interactions/contracts';
+import { depositEther, withdrawEther, depositToken, withdrawToken, loadBalances, } from '../store/interactions/contracts';
 import BalanceForm from './BalanceForm';
 import BalanceTable from './BalanceTable';
-import { loadAllOrders, myTotalOpenOrdersSelector, openOrders } from '../store/interactions/orders';
+import { loadAllOrders, loadOrders, myTotalOpenOrdersSelector, openOrders, priceChartSelector } from '../store/interactions/orders';
 import { loadExchange, loadToken } from './lib/loadContrats';
 import { estadoInicial, IPropBalance, IProp, IEvents } from './lib/type';
 
@@ -14,6 +14,8 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
     const [formInput, updateFormInput] = useState<IPropBalance>(estadoInicial)
     const [carregado, setCarregado] = useState<boolean>(true)
     const { etherBalance, tokenBalance, exchangeEtherBalance, exchangeTokenBalance, tokenName, } = props;
+    events.setCarregado = setCarregado
+    events = { ...events, setCarregado: setCarregado }
 
     const depositEtherChange = (e: any) => {
         formInput.etherDepositAmount = e.target.value
@@ -24,52 +26,46 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
         updateFormInput({ ...formInput, tokenDepositAmount: e.target.value })
 
     };
-    const withdrawEtherChange = (e: any) => { 
-        formInput.etherWithdrawAmount = e.target.value 
+    const withdrawEtherChange = (e: any) => {
+        formInput.etherWithdrawAmount = e.target.value
         updateFormInput({ ...formInput, etherWithdrawAmount: e.target.value })
     };
     const withdrawTokenChange = (e: any) => {
-        formInput.tokenWithdrawAmount = e.target.value 
+        formInput.tokenWithdrawAmount = e.target.value
         updateFormInput({ ...formInput, tokenWithdrawAmount: e.target.value })
     };
 
     const depositEtherSubmit = async (e: any) => {
         e.preventDefault();
         setCarregado(false)
-        events.setCarregado = setCarregado
-        events = {...events, setCarregado: setCarregado}
-        await depositEther(props, formInput, events, setCarregado )
+        
+        await depositEther(props, formInput, events)
 
     }
 
     const depositTokenSubmit = async (e: any) => {
         e.preventDefault();
         setCarregado(false)
-        events.setCarregado = setCarregado
-        events = {...events, setCarregado: setCarregado}
-        await depositToken(props, formInput, events, setCarregado);
+    //    events.setCarregado = setCarregado
+      //  events = { ...events, setCarregado: setCarregado }
+        await depositToken(props, formInput, events);
     }
 
     const withdrawEtherSubmit = async (e: any) => {
         e.preventDefault();
         setCarregado(false)
-        events.setCarregado = setCarregado
-        events = {...events, setCarregado: setCarregado}
-        await withdrawEther(props, formInput, events, myOrders, setCarregado);
+      //  events.setCarregado = setCarregado
+      //  events = { ...events, setCarregado: setCarregado }
+        await withdrawEther(props, formInput, events, myOrders);
     }
 
     const withdrawTokenSubmit = async (e: any) => {
         e.preventDefault();
         setCarregado(false)
-        events.setCarregado = setCarregado
-        events = {...events, setCarregado: setCarregado}
-        await withdrawToken(props, formInput, events, myOrders, setCarregado);
+     //   events = { ...events, setCarregado: setCarregado }
+        await withdrawToken(props, formInput, events, myOrders);
     }
-
-    if (!carregado) {
-        return <Spinner />
-    }
-    else {
+ 
 
 
         return (
@@ -77,44 +73,55 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
                 <Tabs defaultActiveKey={"deposit"} id="deposit" className=" text-white">
                     <Tab eventKey={"deposit"} title={"Deposita"} className={"bg-transparent"} >
                         <BalanceTable hasHead={true} tokenName={"ETH"} walletAmount={etherBalance} exchangeAmount={exchangeEtherBalance} />
-                        <BalanceForm
+                         <BalanceForm
                             onSubmit={depositEtherSubmit}
                             placeHolder={`ETH`}
                             onChange={depositEtherChange}
                             buttonText={"Depositar"}
+                            balance={etherBalance > 0 && carregado}
                             value={formInput.etherDepositAmount}
                         />
+                        
                         <BalanceTable hasHead={true} tokenName={tokenName} walletAmount={tokenBalance} exchangeAmount={exchangeTokenBalance} />
-                        <BalanceForm
-                            onSubmit={depositTokenSubmit}
-                            placeHolder={tokenName}
-                            onChange={depositTokenChange}
-                            buttonText={"Depositar"}
-                            value={formInput.tokenDepositAmount}
-                        />
+                       
+                            <BalanceForm
+                                onSubmit={depositTokenSubmit}
+                                placeHolder={tokenName}
+                                onChange={depositTokenChange}
+                                buttonText={"Depositar"}
+                                balance={tokenBalance> 0 && carregado}
+                                value={formInput.tokenDepositAmount}
+                            />
+                     
                     </Tab>
                     <Tab eventKey={"withdraw"} title={"Resgata"} className={"bg-transparent"}>
                         <BalanceTable hasHead={true} tokenName={"ETH"} walletAmount={etherBalance} exchangeAmount={exchangeEtherBalance} />
-                        <BalanceForm
-                            onSubmit={withdrawEtherSubmit}
-                            placeHolder={"Quantidade ETH"}
-                            onChange={withdrawEtherChange}
-                            buttonText={"Resgatar"}
-                            value={formInput.etherWithdrawAmount}
-                        />
+                   
+                            <BalanceForm
+                                onSubmit={withdrawEtherSubmit}
+                                placeHolder={"Quantidade ETH"}
+                                onChange={withdrawEtherChange}
+                                buttonText={"Resgatar"}
+                                balance={exchangeEtherBalance> 0 && carregado}
+                                value={formInput.etherWithdrawAmount}
+                            />
+                     
                         <BalanceTable hasHead={true} tokenName={tokenName} walletAmount={tokenBalance} exchangeAmount={exchangeTokenBalance} />
-                        <BalanceForm
-                            onSubmit={withdrawTokenSubmit}
-                            placeHolder={`Quantidade  ${tokenName}`}
-                            onChange={withdrawTokenChange}
-                            buttonText={"Resgatar"}
-                            value={formInput.tokenWithdrawAmount}
-                        />
+                   
+                            <BalanceForm
+                                onSubmit={withdrawTokenSubmit}
+                                placeHolder={`Quantidade  ${tokenName}`}
+                                onChange={withdrawTokenChange}
+                                buttonText={"Resgatar"}
+                                balance={exchangeTokenBalance> 0 && carregado}
+                                value={formInput.tokenWithdrawAmount}
+                            />
+                        
                     </Tab>
                 </Tabs>
             </div>
         )
-    }
+ 
 }
 
 interface Props {
@@ -130,18 +137,37 @@ const Balance = ({ dados, events }: Props) => {
     }, [])
 
     async function loadWallet() {
-        //   console.log(dados)
-        const { web3, account } = dados;
+        const { web3, account, exchange, token } = dados;
+        const [orders, filledOrders, myOrders, myFilledOrders, cancelledOrdersOnToken, filledOrdersOnToken, allOrdersOnToken] =
+            await loadOrders(exchange, token, account)
 
-        const [exchangeContract]: any = await loadExchange(web3)
-        const [tokenContract]: any = await loadToken(web3)
+        dados.orderBook = orders
+        dados.myFilledOrders = myFilledOrders
+        dados.myOpenOrders = myOrders
+        dados.filledOrders = filledOrders
 
-        const [cancelledOrders, cancelledOrdersOnToken, filledOrders, filledOrdersOnToken, allOrders, allOrdersOnToken]: any =
-            await loadAllOrders(exchangeContract, tokenContract);
 
-        let orders: any = openOrders(allOrders, filledOrders, cancelledOrders);
-        const myOrdes: any = myTotalOpenOrdersSelector(account, orders);
+        const priceChart: any = await priceChartSelector(filledOrders)
+
+        let _orders: any = openOrders(allOrdersOnToken, filledOrdersOnToken, cancelledOrdersOnToken);
+        const myOrdes: any = myTotalOpenOrdersSelector(account, _orders);
         setMyOrders(myOrdes)
+
+        const [etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] = await loadBalances(web3, exchange, dados.token, account);
+
+        dados.etherBalance = etherBalance
+        dados.exchangeEtherBalance = exchangeEtherBalance
+        dados.tokenBalance = tokenBalance
+        dados.exchangeTokenBalance = exchangeTokenBalance
+        dados.priceChart = priceChart
+
+        events.updateDados({ ...dados, myFilledOrders: myFilledOrders })
+        events.updateDados({ ...dados, filledOrders: filledOrders })
+        events.updateDados({ ...dados, myOpenOrders: myOrders })
+
+        events.updateDados({ ...dados, etherBalance: etherBalance })
+        events.updateDados({ ...dados, exchangeEtherBalance: exchangeEtherBalance })
+       // console.log(dados)
 
     }
 
@@ -151,7 +177,7 @@ const Balance = ({ dados, events }: Props) => {
                 Saldos da Plataforma
             </div>
             <div className="card-body">
-                {showForm(dados, myOrders, events)}
+                {(showForm(dados, dados.myOpenOrders, events))}
             </div>
         </div>
     );

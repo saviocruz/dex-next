@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 
 import Spinner from './Spinner'
 import { Tabs, Tab } from 'react-bootstrap'
@@ -8,45 +8,43 @@ import { IEvents, IProp } from './lib/type'
 const showMyFilledOrders = (props: IProp) => {
 
   const { myFilledOrders, account } = props
-  return (
-    <tbody>
-      {myFilledOrders.map((order: any) => {
-        return (
-          <tr key={order._id} >
-            <td className={`text-${order.orderTypeClass}`}>
-              {order._user === account && (<span>D </span>)}
-              {order._userFill === account && (<span>P </span>)}
-              {order._id}
-            </td>
 
-            <td className={`text-${order.orderTypeClass}`}>{order.orderSign}{order.tokenAmount}</td>
-            <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
-            <td className="text-muted">{order.formattedTimestamp}</td>
-            <td className="text-muted">
-              <span title={order._user}> D </span>
-              <span title={order._userFill}> P </span>
-            </td>
+ 
+    return (
+      <tbody>
+        {myFilledOrders?.map((order: any) => {
+          return (
+            <tr key={order._id} >
+              <td className={`text-${order.orderTypeClass}`}>
+                {order._user === account && (<span>D </span>)}
+                {order._userFill === account && (<span>P </span>)}
+                {order._id}
+              </td>
 
-          </tr>
-        )
-      })}
-    </tbody>
-  )
+              <td className={`text-${order.orderTypeClass}`}>{order.orderSign}{order.tokenAmount}</td>
+              <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
+              <td className="text-muted">{order.formattedTimestamp}</td>
+              <td className="text-muted">
+                <span title={order._user}> D </span>
+                <span title={order._userFill}> P </span>
+              </td>
+
+            </tr>
+          )
+        })}
+      </tbody>
+    )
+  
 }
 
 const showMyOpenOrders = (dados: IProp, events: IEvents) => {
   const { myOpenOrders, exchange, token, account } = dados
   const [carregado, setCarregado] = useState<boolean>(true)
- 
-  if (!carregado) {
 
-    return <Spinner />
-
-  }
-  else {
+  
     return (
       <tbody>
-        {myOpenOrders.map((order: any) => {
+        {myOpenOrders?.map((order: any) => {
           return (
             <tr key={order._id} title={order._user}>
               <td className={`text-${order.orderTypeClass}`}>{order._id}</td>
@@ -64,7 +62,7 @@ const showMyOpenOrders = (dados: IProp, events: IEvents) => {
         })}
       </tbody>
     )
-  }
+ 
 }
 
 
@@ -94,7 +92,7 @@ const MyTransactions = ({ dados, events }: Props) => {
                   <th>Time</th>
                 </tr>
               </thead>
-              {dados.showMyFilledOrders ? showMyFilledOrders(dados) : <Spinner type="table" />}
+              {dados.myFilledOrders.length > 0   ? showMyFilledOrders(dados) :<Spinner type="table" />}
             </table>
           </Tab>
           <Tab eventKey="orders" title="Orders" className="text-white tabs">
@@ -107,7 +105,7 @@ const MyTransactions = ({ dados, events }: Props) => {
                   <th>Cancel</th>
                 </tr>
               </thead>
-              {showMyOpenOrders ? showMyOpenOrders(dados, events) : <Spinner type="table" />}
+              {(dados.myOpenOrders.length > 0 ) ? showMyOpenOrders(dados, events) : <Spinner type="table" />}
             </table>
           </Tab>
         </Tabs>

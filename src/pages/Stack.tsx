@@ -1,19 +1,16 @@
-import React, { Component, useEffect, useState } from 'react'
- 
+import React, { useEffect, useState } from 'react'
 import Spinner from './Spinner'
- 
- 
-import { IEvents, IProp } from './lib/type'
-import {  getResult, stackToken, unStackToken } from '../store/interactions/stacking'
- 
-const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, stackAmount:any, setStackAmount: any) => {
-    const {web3,  myOpenOrders, exchange, token, account } = dados
-    
+
+import { getResult, loadStackData, stackToken, unStackToken } from '../store/interactions/stacking'
+import { loadStacking } from './lib/loadContrats'
+import { INav } from '.'
+
+const showStack = (nav: INav, stackes: any, setStackes: any, stackAmount: any, setStackAmount: any) => {
+    const { web3,  staking, account } = nav
     return (
         <div className="container text-center" >
-           
 
-            {stacks.map((stack: any, index: number) => {
+            {stackes?.map((stack: any, index: number) => {
                 return (
                     <div
                         key={index}
@@ -24,31 +21,40 @@ const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, sta
                         </div>
                         <div className="stacking-cardbg">
 
-                            <table className="table bg-transparent text-white table-sm small">
+                            <table className="table bg-transparent   table-sm small">
                                 <tbody>
                                     <tr>
-                                        <td>You have {web3.utils.fromWei(stack.stacked, 'ether')} ({stack.symbol}) Staked</td>
+                                        <td> Token {web3.utils.fromWei(stack.saldo, 'ether')} ({stack.symbol}) </td>
                                     </tr>
                                     <tr>
-                                        <td>Pool Supply : {web3.utils.fromWei(stack.supply, 'ether')} ({stack.symbol}) </td>
+                                        <td> Ganhos {web3.utils.fromWei(stack.saldoid, 'ether')}   ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Pool {web3.utils.fromWei(stack.saldoPool, 'ether')}  ID</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Staked {web3.utils.fromWei(stack.stacked, 'ether')} ({stack.symbol})</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pool Total : {web3.utils.fromWei(stack.supply, 'ether')} ({stack.symbol}) </td>
                                     </tr>
                                 </tbody>
                             </table>
 
                             <form onSubmit={(event) => {
                                 event.preventDefault()
-                                stackToken(stacking, stack.tokenStack, account, stackAmount, index, web3, events)
+                                stackToken(nav, stack.tokenStack, stackAmount, index, setStackes)
                             }}>
                                 <div className="stack-form">
                                     <div className="stack-pending">{parseFloat(web3.utils.fromWei(stack.pending, 'kwei')).toFixed(3)}</div>
- 
+
                                     <div className="stack-input">
                                         <input
                                             type="number"
                                             min="0.000000000000000001"
                                             step="0.000000000000000001"
                                             placeholder="Amount to stake"
-                                            onChange={(e) => setStackAmount( (e.target.value))}
+                                            onChange={(e) => setStackAmount((e.target.value))}
                                             className="form-control form-control-sm "
                                             required
                                         />
@@ -65,18 +71,18 @@ const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, sta
                                         <button className="btn btn-primary btn-block btn-sm btn-custom "
                                             onClick={(event) => {
                                                 event.preventDefault()
-                                                unStackToken(stacking, account, stackAmount, index, web3)
+                                                unStackToken(nav, stack.tokenStack, stackAmount, index, setStackes)
                                             }
                                             }>Unstake</button>
                                     </div>
                                     <div className="stack-btn">
-                                    <button className="btn btn-primary btn-block btn-sm btn-custom "
+                                        <button className="btn btn-primary btn-block btn-sm btn-custom "
                                             onClick={(event) => {
                                                 event.preventDefault()
-                                                getResult(stacking, account, index, web3)
+                                                getResult( staking, account, index, web3)
                                             }
                                             }>supply</button>
-</div>
+                                    </div>
                                 </div>
 
                             </form>
@@ -84,76 +90,44 @@ const showStack = (dados: IProp, events: IEvents, stacking: any, stacks:any, sta
                     </div>
                 )
             }
-
             )}
-
-
         </div>
     )
-
 }
-
 
 interface Props {
-    dados: IProp;
-    events: IEvents;
+    nav: INav;
+    setNav: any;
 }
 
+const Stack = ({ nav, setNav }: Props) => {
 
+    //  const [stacking, setStacking] = useState<any>();
+    const [stackAmount, setStackAmount] = useState<number>(0);
+    const { web3, account } = nav;
+    const [stakes, setStakes] = useState<any>()
 
-const Stack = ({ dados, events }: Props) => {
-
-    const [myOrders, setMyOrders] = useState<any>();
-  //  const [stacking, setStacking] = useState<any>();
-     const [stackAmount, setStackAmount] = useState<number>(0);
-     const { web3, account, stacks , stacking} = dados;
     useEffect(() => {
         loadWallet()
     }, [])
- 
 
     async function loadWallet() {
-        //   console.log(dados)
-        
-
-      // let stacking = await loadStacking(web3)
-     //   console.log(stacking)
-       //  const stacking: any = await loadStackData(dados.stacks,  account)
-     //   console.log(stack)
-      //  let stackAmount =0 
-    //    setStacking(stacking)
-       //  setStackAmount(stackAmount)
-        
-/*
-        const [exchangeContract]: any = await loadExchange(web3)
-        const [tokenContract]: any = await loadToken(web3)
-
-        const [cancelledOrders, cancelledOrdersOnToken, filledOrders, filledOrdersOnToken, allOrders, allOrdersOnToken]: any =
-            await loadAllOrders(exchangeContract, tokenContract);
-
-        let orders: any = openOrders(allOrders, filledOrders, cancelledOrders);
-        const myOrdes: any = myTotalOpenOrdersSelector(account, orders);
-        setMyOrders(myOrdes)
-*/
+       // const { web3, account } = nav;
+        const [staking]: any = await loadStacking(web3)
+        const stacks: any = await loadStackData(web3, staking, account)
+        console.log(stacks)
+        nav.staking = staking
+        setNav({...nav, staking: staking})
+        setStakes(stacks)
+        console.log(stacks)
     }
-    
+
     return (
         <div>
-            { true ? showStack(dados, events, dados.stacking, dados.stacks, stackAmount, setStackAmount ) : <Spinner />}
-
+            {stakes?.length > 0 ? showStack(nav, stakes, setStakes, stackAmount, setStackAmount) : <Spinner type="tbl"/>}
         </div>
     )
 
 }
-/*
-function mapStateToProps(state) {
-    return {
-        account: accountSelector(state),
-        stacking: stackingSelector(state),
-        stacks: stacksSelector(state),
-        stackAmount: stackAmountSelector(state),
-        web3: web3Selector(state)
-    }
-   
-} */
+
 export default Stack

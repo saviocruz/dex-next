@@ -21,7 +21,7 @@ import "./IDTToken.sol";
 // [X] I WANT MORE
 
 contract Stacking is Ownable {
-     using SafeMath for uint256;
+    using SafeMath for uint256;
     //using SafeERC20 for IERC20;
 
     mapping(address => uint256) public poolBalance; //mapping of token address and amount
@@ -58,7 +58,7 @@ contract Stacking is Ownable {
         uint256 _idtPerBlock,
         uint256 _startBlock,
         uint256 _bonusEndBlock
-    )  {
+    ) {
         idt = _token;
         devAddress = _devAddress;
         idtPerBlock = _idtPerBlock;
@@ -137,6 +137,35 @@ contract Stacking is Ownable {
         } else {
             idt.transfer(_to, _amount);
         }
+    }
+
+    function getWithdraw(uint256 _id) public view returns (uint256) {
+ 
+        uint256 r = update(_id);
+        uint256 pending = stackers[_id][msg.sender]
+            .mul(r)
+            .div(1e18);
+
+        return pending;
+    }
+
+    function update(uint256 _pid) public view returns (uint256) {
+        PoolInfo memory pool = poolInfo[_pid];
+        if (block.number <= pool.lastRewardBlock) {
+            return 1;
+        }
+        uint256 supply =  stk.balanceOf( address(this));
+        if (supply == 0) {
+             
+            return 0;
+        }
+        uint256 multiplier = getMultiplier(pool.lastRewardBlock, block.number);
+        uint256 idtReward = multiplier
+            .mul(idtPerBlock)
+            .mul(pool.allocPoint)
+            .div(totalAllocPoint);
+        uint256 acc = pool.accIDTPerShare.add(idtReward.mul(1e18).div(supply));
+        return acc;
     }
 
     // mint some tokens
@@ -273,7 +302,7 @@ contract Stacking is Ownable {
         return stk.symbol();
     }
 
-     function getLPSupply(uint256 _pid) public returns (uint256) {
+    function getLPSupply(uint256 _pid) public returns (uint256) {
         PoolInfo memory pool = poolInfo[_pid];
         stk = MyERC20(pool.tokenStack);
         return stk.balanceOf(address(this));
@@ -290,7 +319,7 @@ contract Stacking is Ownable {
 
         if (block.number <= bonusEndBlock) {
             return ((block.number - pool.lastRewardBlock) * BONUS_MULTIPLIER);
-        } else if (pool.lastRewardBlock >=  bonusEndBlock) {
+        } else if (pool.lastRewardBlock >= bonusEndBlock) {
             return block.number - pool.lastRewardBlock;
         } else {
             return

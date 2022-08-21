@@ -11,11 +11,8 @@ import { loadOrders, priceChartSelector } from '../store/interactions/orders';
 import { loadBalances } from '../store/interactions/contracts';
 import { estadoInicialNFT, IEvents, inicialEvents, IProp } from './lib/type';
 import Spinner from './Spinner';
-import Stack from './Stack';
-import { loadStackData } from '../store/interactions/stacking';
 
-
-const Principal = ({ nav, setDados }: any) => {
+const Principal = ({ nav, setNav }: any) => {
 	const [carregado, setCarregado] = useState(false)
 	const [account, setAccount] = useState<String>()
 	const [dados, updateDados] = useState<IProp>(estadoInicialNFT);
@@ -35,6 +32,7 @@ const Principal = ({ nav, setDados }: any) => {
 	}, [])
 
 	async function loadWallet() {
+		
 		const web3: Web3 = loadWeb3()
 
 		const account: any = await loadAccount(web3)
@@ -42,6 +40,7 @@ const Principal = ({ nav, setDados }: any) => {
 		const [tokenContract]: any = await loadToken(web3)
 		dados.token = tokenContract
 		loadNFTs(account[0])
+		
 	}
 
 	async function loadNFTs(account: any) {
@@ -52,29 +51,9 @@ const Principal = ({ nav, setDados }: any) => {
 		const tokenPairs: any = await loadAvailableTokens(web3, pairsContract)
 		const tokenName: string = await dados.token.methods.symbol().call()
 
-		const [orders, filledOrders, myOrders, myFilledOrders] = await loadOrders(exchangeContract, dados.token, account)
-
-		const [etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] = await loadBalances(web3, exchangeContract, dados.token, account);
-
-		const priceChart: any = await priceChartSelector(filledOrders)
-
 		let bl = await web3.eth.getBlockNumber() 
 		console.log(bl)
-	//	var block = await web3.eth.getBlock('latest')
-		 
-		//console.log(block)
- 
 
-		const [stacking]: any = await loadStacking(web3)
-		const stacks: any = await loadStackData(web3, stacking, account)
-		console.log(stacks)
-		dados.stacking = stacking
-		dados.stacks = stacks
-
-		dados.etherBalance = etherBalance
-		dados.exchangeEtherBalance = exchangeEtherBalance
-		dados.tokenBalance = tokenBalance
-		dados.exchangeTokenBalance = exchangeTokenBalance
 
 		dados.account = account
 		dados.web3 = web3
@@ -83,12 +62,9 @@ const Principal = ({ nav, setDados }: any) => {
 		dados.tokenName = tokenName;
 		dados.tokenPairs = tokenPairs
 
-		dados.orderBook = orders
-		dados.myFilledOrders = myFilledOrders
-		dados.myOpenOrders = myOrders
-		dados.filledOrders = filledOrders
-
-		dados.priceChart = priceChart
+	// 	dados.myFilledOrders = {}
+//	 	dados.myOpenOrders = {}
+//	 	dados.filledOrders = {}
 
 		updateDados(dados)
 		setCarregado(true)
@@ -99,10 +75,12 @@ const Principal = ({ nav, setDados }: any) => {
 
 	return (
 		<>
-			{(dados.showAdmin) ? <Admin dados={dados} events={events} /> : <div> <Spinner type="table" /> Verificando Admin</div>}
-			{nav.content === 'Dex' && carregado ? <Content dados={dados} events={events} /> : <div>  <Spinner /> Carregando plataforma</div>}
-			{nav.content === 'Stack' && carregado === true ? <Stack dados={dados} events={events} /> : null}
-
+			{nav.content === 'Dex'  && (
+				<div>
+				{ carregado && dados.showAdmin ? <Admin dados={dados} events={events} /> : <div> <Spinner type="tbl" /> Verificando Admin</div>}
+				{ carregado ? <Content dados={dados} events={events} /> : <div> <Spinner type="tbl" /> Carregando plataforma</div>}
+				</div>
+			)}
 			<Mensagem msg={result.msg} desc={result.desc} gas={result.gas} show={show} setShow={setShow} setCarregado={result.setCarregado} data={dados} />
 		</ >
 	);

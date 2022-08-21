@@ -33,7 +33,7 @@ const OrderForm = (props: any) => {
                         min="0"
                         placeholder="preço"
                         onChange={priceOnChange}
-                        value={ultimoPreco ||""}
+                        value={ultimoPreco}
                         className="form-control form-control-sm bg-transparent  text-white"
                         required />
                 </div>

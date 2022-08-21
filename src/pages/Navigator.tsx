@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { Navbar, Nav } from 'react-bootstrap'
 import Spinner from './Spinner'
 import Identicon from 'identicon.js';
 
-
-import { IEvents, IProp } from './lib/type';
 import { INav } from '.';
+
 
 const showAdminPanel = (dados: any) => {
 
@@ -24,13 +23,13 @@ const showAdminPanel = (dados: any) => {
 }
 
 interface Props {
-  dados: INav;
-  setDados: any
+  nav: INav;
+  setNav: any
 }
 
-const Navigator = ({ dados, setDados }: Props) => {
-  const { account, admin, carregado } = dados
-
+const Navigator = ({ nav, setNav }: Props) => {
+  const {web3, account, admin, carregado, staking,  } = nav
+ 
   var identiconOption = {
     foreground: [186, 39, 127, 255],               // rgba black
     background: [0, 0, 0, 255],         // rgba white
@@ -42,8 +41,8 @@ const Navigator = ({ dados, setDados }: Props) => {
 
   return (
 
-    <Navbar bg="transparent" variant="dark" collapseOnSelect expand="lg">
-      <Navbar.Brand className="brand">
+    <Navbar  variant="dark" collapseOnSelect expand="lg" style={{backgroundColor: "#4B0082"}}>
+      <Navbar.Brand className="brand"  >
         <img
           alt="logo"
           src="/logo.svg"
@@ -52,40 +51,43 @@ const Navigator = ({ dados, setDados }: Props) => {
           className="d-inline-block align-top brand"
         />
       </Navbar.Brand>
-      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-      <Navbar.Collapse id="responsive-navbar-nav">
+      <Navbar.Toggle aria-controls="responsive-navbar-nav"  />
+      <Navbar.Collapse id="responsive-navbar-nav" >
         <Nav className="">
           <Nav.Link
-
             onClick={() => {
-              dados.content = "Dex"
-              setDados({ ...dados, content: "Dex" })
+              nav.content = "Dex"
+              setNav({ ...nav, content: "Dex" })
             }}> DEX</Nav.Link>
 
           <Nav.Link
             onClick={() => {
-              dados.content = "Stack"
-              setDados({ ...dados, content: "Stack" })
-            } }>Staking</Nav.Link>
+              nav.content = "Stake"
+              setNav({ ...nav, content: "Stake" })
+            }}>Staking Block</Nav.Link>
 
           <Nav.Link
-            onClick={() => alert('Nft')}>NFT</Nav.Link>
+            onClick={() => {
+              nav.content = "StakeTime"
+              setNav({ ...nav, content: "StakeTime" })
+            }}>Staking Time</Nav.Link>
+
         </Nav>
 
-        <div style={{ marginLeft: "60px", fontSize: "20px" }}>
+        <div style={{ marginLeft: "60px", fontSize: "20px" }} className="text-white">
           Plataforma DEX experimental
         </div>
 
-        <div style={{ marginLeft: "160px", fontSize: "12px" }}>
-          {carregado === true ? account : <Spinner type="table" />}
+        <div style={{ marginLeft: "160px", fontSize: "12px" }} className="text-white">
+          {carregado === true ? account : <Spinner type="tbl" />}
         </div>
       </Navbar.Collapse>
 
 
       <div>
-        {carregado === true ? showAdminPanel(dados) : <Spinner type="table" />}
+        {carregado === true ? showAdminPanel(nav) : <Spinner type="tbl" />}
       </div>
-    </Navbar>
+    </Navbar >
 
 
   );

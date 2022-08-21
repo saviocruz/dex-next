@@ -40,11 +40,13 @@ export interface IProp {
   sellAmount: number;
   sellPrice: number;
 
+ 
+
 
   orderBook: any;
-  filledOrders: any;
-  myFilledOrders: any;
-  myOpenOrders: any;
+  filledOrders?: any;
+  myFilledOrders?: any;
+  myOpenOrders?: any;
   stacks: any;
 
   showOrderBook?: boolean;

@@ -1,16 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import Spinner from './Spinner';
 import { fillOrder } from '../store/interactions/orders';
 import { IEvents, IProp } from './lib/type';
-import { equal } from 'assert';
 
 
-const renderOrder = (order: any, dados: IProp, events: IEvents, carregado: boolean, setCarregado: any) => {
-    const { account } = dados;
- 
+const renderOrder = (order: any, dados: IProp, events: IEvents, carregado: boolean, setCarregado: any, orderID: number, setOrderID: any) => {
  
         return (
             <OverlayTrigger key={order._id}
@@ -29,13 +25,17 @@ const renderOrder = (order: any, dados: IProp, events: IEvents, carregado: boole
 
                     <td style={{ fontSize: "12px" }}> {order.formattedTimestamp}</td>
 
-                    <td>{carregado && order._user !== account && (
+                    <td>{ order._user !== dados.account && order._id !== orderID && (
                         <Button className='btn btn-sm' onClick={(e) => {
                             setCarregado(false)
-                            fillOrder(order, dados, events, setCarregado)
+                            setOrderID(order._id )
+                            fillOrder(order, dados, events, setCarregado, setOrderID)
                         }
                         }>{order.orderFillAction}</Button>
-                    )}
+                        )}
+                        {  (order._id === orderID ) &&  !carregado && (
+                            <div>...</div>
+                        )}
                     </td>
                 </tr>
             </OverlayTrigger>
@@ -47,10 +47,11 @@ const showOrderBook = (dados: any, events: IEvents) => {
 
     const { orderBook, tokenName, token } = dados;
     const [carregado, setCarregado] = useState<boolean>(true)
-    
+    const [orderID, setOrderID] = useState<number>(0)
+
     return (
         <tbody key={token.options.address}>
-            {orderBook.sellOrders.map((order: any) => renderOrder(order, dados, events, carregado, setCarregado))}
+            {orderBook.sellOrders.map((order: any) => renderOrder(order, dados, events, carregado, setCarregado,orderID, setOrderID))}
             <tr>
                 <th>ID</th>
                 <th>{tokenName}</th>
@@ -59,7 +60,7 @@ const showOrderBook = (dados: any, events: IEvents) => {
                 <th>Data/hora</th>
                 <th>Opçao</th>
             </tr>
-            {orderBook.buyOrders.map((order: any) => renderOrder(order, dados, events, carregado, setCarregado))}
+            {orderBook.buyOrders.map((order: any) => renderOrder(order, dados, events, carregado, setCarregado, orderID, setOrderID))}
 
 
         </tbody>

@@ -35,7 +35,7 @@ const selectPairToken = async (tokenAddress: any, dados: IProp, updateDados: any
     updateDados({...dados, tokenBalance: tokenBalance}) 
     updateDados({...dados, exchangeTokenBalance: exchangeTokenBalance}) 
 
-     console.log(dados)
+    console.log(dados)
 }
 
 const renderMenuItem = (token: any, dados: any, updateDados: any, key: any) => {

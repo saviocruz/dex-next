@@ -9,16 +9,24 @@ import Web3 from 'web3';
 import { isAdmin } from './lib/contracts';
 import { loadExchange } from './lib/loadContrats';
 import Stack from './Stack';
- 
+
 
 export interface INav {
+  web3: any;
   account: string;
+  staking: any;
+  exchange: any;
+  token: any;
   admin: boolean;
   carregado: boolean;
   content: string;
 }
-const nav = {
+const iniNav = {
+  web3: {},
   account: "",
+  staking: null,
+  exchange: null,
+  token: null,
   admin: false,
   carregado: false,
   content: "<Principal/> "
@@ -26,8 +34,8 @@ const nav = {
 
 const Home = () => {
   const [account, setAccount] = useState<String>()
- 
-  const [dados, setDados] = useState<INav>(nav)
+
+  const [nav, setNav] = useState<INav>(iniNav)
   useEffect(() => {
     loadWallet()
 
@@ -39,28 +47,34 @@ const Home = () => {
     const account: any = await loadAccount(web3)
     const [exchange]: any = await loadExchange(web3)
     let admin = await isAdmin(exchange, account[0])
-    setDados({...dados, account: account[0]})
-    setDados({...dados, admin: admin})
-    setDados({...dados, carregado: true})
-    setDados({ ...dados, content: "Dex" })
-    setDados ({  account: account[0],
+    setNav({ ...nav, account: account[0] })
+    setNav({ ...nav, admin: admin })
+    setNav({ ...nav, carregado: true })
+    setNav({ ...nav, content: "Dex" })
+    setNav({
+      web3: web3,
+      account: account[0],
+      token: null,
+      exchange: null,
+      staking: null,
       admin: admin,
       carregado: true,
-      content: "Dex"})
-  
-
+      content: "Dex"
+    })
   }
- 
+
 
   return (
     <div >
       <main  >
-        <Navigator dados={dados}  setDados={setDados}/>
-        {dados.carregado === true? <Principal  nav={dados}  setDados={setDados} /> : null}
-      </main>
-    </div>  
+        <Navigator nav={nav} setNav={setNav} />
+        {nav.content === 'Dex' && nav.carregado === true ? <Principal nav={nav} setNav={setNav} /> : null}
+        {nav.content === 'Stake' && nav.carregado === true ? <Stack nav={nav} setNav={setNav} /> : null}
 
-    
+      </main>
+    </div>
+
+
   )
 }
 

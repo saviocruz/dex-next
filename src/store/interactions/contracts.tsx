@@ -53,7 +53,7 @@ export const loadBalances = async (web3: Web3, exchange: any, token: any, accoun
 
     const [etherBalance, exchangeEtherBalance] = await loadEtherBalances(web3, exchange, account);
     const [tokenBalance, exchangeTokenBalance] = await loadTokenBalances(web3, exchange, token, account)
-    console.log(tokenBalance)
+  //  console.log(tokenBalance)
 
     return [parseFloat(web3.utils.fromWei(etherBalance, ETHUnit)), parseFloat(web3.utils.fromWei(exchangeEtherBalance, ETHUnit)),
     parseFloat(web3.utils.fromWei(tokenBalance, ETHUnit)) , parseFloat(web3.utils.fromWei(exchangeTokenBalance, ETHUnit))]
@@ -127,9 +127,9 @@ export function atualiza(dados: IProp, formInput: any, events: IEvents, setCarre
         })
 }
 
-export const depositEther = async (dados: IProp, formInput: IPropBalance, events: IEvents, setCarregado: any) => {
+export const depositEther = async (dados: IProp, formInput: IPropBalance, events: IEvents ) => {
     const { web3, exchange, token, account } = dados;
-  //  const {  setCarregado } = events
+   const {  setCarregado } = events
 
     const amount = web3.utils.toWei(formInput.etherDepositAmount.toString(), 'ether')
 
@@ -161,10 +161,10 @@ export const depositEther = async (dados: IProp, formInput: IPropBalance, events
         })
 }
 
-export const withdrawEther = async (dados: IProp, formInput: IPropBalance, events: IEvents, myTotalOpenOrders: any, setCarregado: any) => {
+export const withdrawEther = async (dados: IProp, formInput: IPropBalance, events: IEvents, myTotalOpenOrders: any ) => {
     const { web3, exchange, token, account } = dados;
-   // const {  setCarregado } = events
-     let balance = await exchange.methods.balanceOf(ETHER_ADDRESS, account).call()
+    const {  setCarregado } = events
+    let balance = await exchange.methods.balanceOf(ETHER_ADDRESS, account).call()
     balance = web3.utils.fromWei(balance, 'ether')
     console.log('TOTAL OPEN ORDERS : ', myTotalOpenOrders)
     // Check if there is open orders for the token
@@ -225,9 +225,9 @@ export const withdrawEther = async (dados: IProp, formInput: IPropBalance, event
     }
 }
 
-export const depositToken = async (dados: IProp, formInput: IPropBalance, events: any, setCarregado: any) => {
+export const depositToken = async (dados: IProp, formInput: IPropBalance, events: any ) => {
     const { web3, exchange, token, tokenName, account } = dados;
-   // const {  setCarregado } = events
+    const {  setCarregado } = events
     const amount = web3.utils.toWei(formInput.tokenDepositAmount.toString(), 'ether');
     const saldo = await token.methods.balanceOf(account).call()
     let balance: number = parseFloat(web3.utils.fromWei(saldo, 'ether'))
@@ -262,6 +262,7 @@ export const depositToken = async (dados: IProp, formInput: IPropBalance, events
                     .then((hash: any) => {
                         console.log("then depositToken");
                         formInput.gas = hash.gasUsed;
+                        formInput.tokenDepositAmount = 0;
                         atualiza(dados, formInput, events, setCarregado);
                     });
             });
@@ -269,9 +270,9 @@ export const depositToken = async (dados: IProp, formInput: IPropBalance, events
 
 }
 
-export const withdrawToken = async (dados: IProp, formInput: IPropBalance, events: any, myTotalOpenOrders: any, setCarregado: any) => {
+export const withdrawToken = async (dados: IProp, formInput: IPropBalance, events: any, myTotalOpenOrders: any ) => {
     const { web3, exchange, token, account, tokenName } = dados;
-    const { setShow, setResult } = events
+    const { setCarregado } = events
     let balance = await exchange.methods.balanceOf(token.options.address, account).call()
     //let decimals =await token.methods.decimals().call()
     balance = web3.utils.fromWei(balance, 'ether')

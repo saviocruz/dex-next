@@ -8,7 +8,7 @@ import { IMensagem } from '../../pages/Mensagem';
 export const loadAllOrders = async (exchange: any, token: any) => {
     // cacelled orders
   //  console.log("cancelledOrdersOnToken1")
-    let bloc = 5400
+    let bloc = 5800
     const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: bloc, toBlock: 'latest' })
    // console.log("cancelledOrdersOnToken2")
     //format cancelled orders
@@ -302,7 +302,7 @@ export const cancelOrder = ( order: any,   dados: IProp, events: IEvents, setCar
            //  updateDados(props)
         })
 }
-export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregado: any) => {
+export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregado: any,   setOrderID: any) => {
 
     const { exchange, token, web3, account, tokenName, exchangeEtherBalance, exchangeTokenBalance } = dados
     console.log(order)
@@ -346,6 +346,7 @@ export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregad
             .on('error', (error: any) => {
                 console.log(error);
                 events.setCarregado(true)
+                setOrderID(0)
                 window.alert("There was an error");
             })
 
@@ -353,14 +354,15 @@ export const fillOrder = (order: any, dados: IProp, events: IEvents, setCarregad
                 console.log('then fillOrder', hash.transactionHash)
                 //gerarMensagem('Ordem enviada', 'Aguarde confirmação: Foram enviados ' + amount, dados, events)
                 atualiza(dados, amount, events, setCarregado)
+               // setOrderID(0)
 
             })
     }
 }
 
-export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents, setCarregado: any) => {
+export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents) => {
     const { exchange, token, web3, account } = dados
-    //const { setCarregado } = events
+    const { setCarregado } = events
     const tokenGet = token.options.address;
     console.log(token.options.address)
     const amountGet = web3.utils.toWei(formInput.buyAmount, 'ether');
@@ -395,8 +397,9 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
     }
 }
 
-export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvents, setCarregado: any) => {
+export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvents) => {
     const { exchange, token, web3, account } = dados
+    const { setCarregado } = events
     const tokenGet = ETHER_ADDRESS;
     const amountGet = web3.utils.toWei((formInput.sellAmount * formInput.sellPrice).toFixed(18), 'ether');
     const tokenGive = token.options.address;
@@ -448,10 +451,7 @@ export async function loadOrders(exchangeContract: any, tokenContract: any, acco
     let myFilledOrders: any = myFilledOrdersSelector(account, filledOrdersOnToken);
 
     let filledOrdersDec = decorateFilledOrders(filledOrdersOnToken);
-
-    //	console.log(account)
-    //	console.log(filledOrdersOnToken)
-    return [orders, filledOrdersDec, myOrders, myFilledOrders]
+    return [orders, filledOrdersDec, myOrders, myFilledOrders, cancelledOrdersOnToken, filledOrdersOnToken, allOrdersOnToken]
 }
 
 export function gerarMensagem(msg: string, desc: string, dados: IProp, events: IEvents, setCarregado: any) {
