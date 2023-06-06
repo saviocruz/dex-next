@@ -48,6 +48,21 @@ const StackTime = ({ nav, setNav }: Props) => {
 
   }, []);
 
+  useEffect(() => {
+    const load = async() => { 
+      await refreshUserDetails();
+    }
+
+    if (typeof web3 !== 'undefined'
+      && typeof accounts !== 'undefined'
+      && typeof stakerContract !== 'undefined'
+      && typeof depositTokenContract !== 'undefined'
+      && typeof rewardTokenContract !== 'undefined') {
+        load();
+      }
+  }, [web3, accounts, stakerContract, depositTokenContract, rewardTokenContract]) // eslint-disable-line react-hooks/exhaustive-deps
+
+
   async function loadWallet() {
     setIsGlobalLoading(false);
 
@@ -56,17 +71,7 @@ const StackTime = ({ nav, setNav }: Props) => {
     setAccounts(account)
     
     initConnection()
-    const load = async () => {
-      await refreshUserDetails();
-    }
-
-    if (typeof  web3 !== 'undefined'
-      && typeof accounts !== 'undefined'
-      && typeof stakerContract !== 'undefined'
-      && typeof depositTokenContract !== 'undefined'
-      && typeof rewardTokenContract !== 'undefined') {
-      load();
-    }
+     
 
   }
 
@@ -99,7 +104,7 @@ const StackTime = ({ nav, setNav }: Props) => {
       setDepositTokenContract(depositContract);
       setRewardTokenContract(rewardContract);
       ///console.log(depositContract)
-
+/*
       window.ethereum.on('accountsChanged', function (_accounts: any) {
         if (_accounts.length === 0) {
           setAccounts(null);
@@ -109,7 +114,7 @@ const StackTime = ({ nav, setNav }: Props) => {
           setAccounts(_accounts);
         }
       });
-
+*/
     } catch (error: any) {
       // Catch any errors for any of the above operations.
       console.error(error);
@@ -141,7 +146,7 @@ const StackTime = ({ nav, setNav }: Props) => {
     let rewardBalance = await rewardTokenContract.methods.balanceOf(accounts[0]).call({ from: accounts[0] });
     let depSymbol = await depositTokenContract.methods.symbol().call({ from: accounts[0] });
     let rewSymbol = await rewardTokenContract.methods.symbol().call({ from: accounts[0] });
-
+    console.log(res)
     let parsed = {
       rewardPerDay: (res["_rewardPerSecond"] * 24 * 60 * 60 / (10 ** 18))
       , daysLeft: (res["_secondsLeft"] / 60 / 60 / 24)
@@ -152,7 +157,7 @@ const StackTime = ({ nav, setNav }: Props) => {
       , depSymbol: depSymbol
       , rewSymbol: rewSymbol
     }
-
+    console.log(parsed)
     setUserDetails(parsed);
     setIsGlobalLoading(false);
   }

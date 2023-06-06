@@ -1,8 +1,6 @@
 import React, {useContext, useState} from "react";
 import BlockchainContext from "../context/BlockchainContext";
-
 import DisplayContext from "../context/DisplayContext";
-
 import TimeLeftField from "./UserPanel/TimeLeftField";
 
 import Button from 'react-bootstrap/Button';
@@ -10,8 +8,6 @@ import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/Container';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-
-
 
 export default function UserPanel() {
     const blockchainContext = useContext(BlockchainContext);
@@ -35,10 +31,10 @@ export default function UserPanel() {
         toast.dismiss();
         let amount = web3.utils.toWei(inputStake.toString());
         try {
-            toast.info('Approve a transação 1 of 2 (aprovar)...', {position: 'top-left', autoClose: false});
+            toast.info('Approve a transação 1 of 2 (aprovar)...', {position: 'top-center', autoClose: false});
             await depositTokenContract.methods.approve(stakerContract.options.address, amount.toString()).send({ from: accounts[0] });
             toast.dismiss();
-            toast.info('Approve a transação 2 of 2 (staking)...', {position: 'top-left', autoClose: false});
+            toast.info('Approve a transação 2 of 2 (staking)...', {position: 'top-center', autoClose: false});
             await stakerContract.methods.deposit(amount).send({ from: accounts[0] });
         } finally {
             toast.dismiss();
@@ -46,8 +42,7 @@ export default function UserPanel() {
         setInputStake("");
         await refreshUserDetails();
     }
-    
-      
+
     async function withdraw() {
         if (!isNonZeroNumber(inputUnstake)) {
             toast.error('No amount entered.');
@@ -59,7 +54,7 @@ export default function UserPanel() {
         }
         toast.dismiss();
         let amount = web3.utils.toWei(inputUnstake.toString());
-        toast.info('Confirme a transação...', {position: 'top-left', autoClose: false});
+        toast.info('Confirme a transação...', {position: 'top-center', autoClose: false});
         try {
             await stakerContract.methods.withdraw(amount).send({ from: accounts[0] });
         } finally {
@@ -71,7 +66,7 @@ export default function UserPanel() {
     
     async function claim() {
         toast.dismiss();
-        toast.info('Confirme a transação...', {position: 'top-left', autoClose: false});
+        toast.info('Confirme a transação...', {position: 'top-center', autoClose: false});
         try {
             await stakerContract.methods.claim().send({ from: accounts[0] });
         } finally {
@@ -123,8 +118,7 @@ export default function UserPanel() {
                 {isNonZeroNumber(userDetails["rewardPerDay"])? <RewardsPhaseActive /> : <RewardsPhaseFinished/>}
                 <CardKeyValue label="Saldo stake" value={numberToFixed(userDetails["deposited"])} />
                 <CardKeyValue label="Saldo pendente" value={numberToFixed(userDetails["pending"])} />
-                
-
+                <CardKeyValue label="Ganhos acumulados " value={numberToFixed(userDetails["rewardTokenBalance"])} />  
                 <br/><br/>
                 <div className="label-above-button">
                     Saldo {userDetails["depSymbol"]} restante para stake: {userDetails["depositTokenBalance"]}

@@ -12,7 +12,7 @@ const renderOrder = (order: any, dados: IProp, events: IEvents, carregado: boole
             <OverlayTrigger key={order._id}
                 overlay={
                     <Tooltip id={order._id}>
-                        {`${order._user}`}
+                        {order._user.substring(0, 8)}...{order._user ? order._user.substring(order._user.length - 4, order._user.length) : undefined}
                     </Tooltip>
                 } >
                 <tr key={order._id} className="order-book-order" title={order._id} >

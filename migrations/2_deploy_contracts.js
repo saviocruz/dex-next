@@ -89,13 +89,11 @@ module.exports = async function (deployer) {
 	const lpToken = await MockERC20.at(tokens[1]);
 	await lpToken.mint(accounts[1], web3.utils.toWei("1000000"));
 	await lpToken.mint(accounts[2], web3.utils.toWei("1000000"));
-
-
 	
 	depositToken = tokens[1];
 	rewardToken = tokens[0];
 	await deployer.deploy(Staker, depositToken, rewardToken);
-	
+
 	async function enviaOrdem(buyAmount, buyPrice, account) {
 		const amountGet = web3.utils.toWei(buyAmount, 'ether');
 		const tokenGive = ETHER_ADDRESS;
@@ -109,4 +107,5 @@ module.exports = async function (deployer) {
 		const amountGive = web3.utils.toWei((buyAmount * buyPrice).toFixed(18), 'ether');
 		await exchange.makeOrder(tokenGive, amountGive, token.address, amountGet, { from: account })
 	}
+
 };
