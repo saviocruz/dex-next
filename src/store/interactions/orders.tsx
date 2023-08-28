@@ -8,7 +8,7 @@ import { IMensagem } from '../../pages/Mensagem';
 export const loadAllOrders = async (exchange: any, token: any) => {
     // cacelled orders
   //  console.log("cancelledOrdersOnToken1")
-    let bloc = 5800
+    let bloc = 200
     const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: bloc, toBlock: 'latest' })
    // console.log("cancelledOrdersOnToken2")
     //format cancelled orders
@@ -379,20 +379,24 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
             + ' Você tem atualmente ' + balance + ' Ether em sua conta.'
             , dados, events, setCarregado)
     } else {
-        exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+        console.log(tokenGet, amountGet, tokenGive, amountGive)
+       let ret = await exchange.methods.makeOrder(tokenGet, amountGet, tokenGive, amountGive).send({ from: account })
+      
+
             .on('transactionHash', (hash: any) => {
                 console.log('transactionHash makeBuyOrder', hash)
             })
-            .on('error', (error: any) => {
+            console.log(ret)
+           /* .on('error', (error: any) => {
                 console.log(error);
                 setCarregado(true)
                 window.alert('Ocorreu um erro na ordem de compra');
             })
             .then(async (hash: any) => {
-                console.log('then makeBuyOrder', hash.transactionHash)
-                atualiza(dados, formInput.buyAmount, events, setCarregado)
+                console.log('then makeBuyOrder', hash.transactionHash) */
+     //   await atualiza(dados, formInput.buyAmount, events, setCarregado)
 
-            })
+           // })
 
     }
 }
@@ -440,11 +444,11 @@ export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvent
 export async function loadOrders(exchangeContract: any, tokenContract: any, account: string) {
     const [cancelledOrders, cancelledOrdersOnToken, filledOrders, filledOrdersOnToken, allOrders, allOrdersOnToken]: any =
         await loadAllOrders(exchangeContract, tokenContract);
-
+    console.log(tokenContract)
     // BUSCA TODAS ORDENS ABERTAS
     let orders: any = openOrders(allOrdersOnToken, filledOrdersOnToken, cancelledOrdersOnToken);
     orders = await orderBookSelector(orders);	// buyOrders //sellOrders
-
+    console.log(orders)
     let myOrders: any = openOrders(allOrdersOnToken, filledOrdersOnToken, cancelledOrdersOnToken);
     myOrders = myTotalOpenOrdersSelector(account, myOrders);
 

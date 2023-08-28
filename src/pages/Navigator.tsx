@@ -1,10 +1,8 @@
-import React, { Component, useEffect, useState } from 'react';
+import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap'
 import Spinner from './Spinner'
-import Identicon from 'identicon.js';
 
 import { INav } from '.';
-
 
 const showAdminPanel = (dados: any) => {
 
@@ -15,11 +13,8 @@ const showAdminPanel = (dados: any) => {
           className="btn btn-primary btn-block btn-sm btn-custom"
           onClick={() => (dados.admin = true)}>Admin</button>
       </div>
-
     )
-
   }
-
 }
 
 interface Props {

@@ -75,7 +75,7 @@ export default function UserPanel() {
         await refreshUserDetails();
     }
 
-    function numberToFixed(n) {
+    function numberToFixed(n: any) {
         if (n === undefined)
             return n;
         return parseFloat(n).toFixed(6);

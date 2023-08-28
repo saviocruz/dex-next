@@ -11,7 +11,7 @@ import Web3 from 'web3';
 export const loadToken  = async (web3: Web3) => {
   try {
     let networkId = Object.keys(MyERC20.networks)[0] as keyof typeof MyERC20.networks;
-    const data = MyERC20.networks[networkId];
+    const data: any = MyERC20.networks[networkId];
     if (data) {
       const tokenContract = new web3.eth.Contract(MyERC20.abi  as unknown as AbiItem, data.address);
    //  const name = await token.methods.symbol().call();
@@ -50,7 +50,7 @@ export const loadSaldo = async (account: string, _spender: string) => {
 export const loadPairs  = async (web3: Web3) => {
   try {
     let networkId = Object.keys(Pairs.networks)[0] as keyof typeof Pairs.networks;
-    const data = Pairs.networks[networkId];
+    const data: any = Pairs.networks[networkId];
     
     if (data) {
       const pairsContract = new web3.eth.Contract(Pairs.abi  as unknown as AbiItem, data.address);
@@ -67,9 +67,9 @@ export const loadPairs  = async (web3: Web3) => {
 export const loadExchange = async (web3: Web3) => {
   try {
     let networkId = Object.keys(Exchange.networks)[0] as keyof typeof Exchange.networks;
-    const data = Exchange.networks[networkId];
+    const data: any = Exchange.networks[networkId];
     if (data) {
-      const exchangeContract: any = new web3.eth.Contract(Exchange.abi as unknown as AbiItem, data.address);
+      const exchangeContract = new web3.eth.Contract(Exchange.abi as unknown as AbiItem, data.address);
       console.log('exchange: ', data.address)
       return [exchangeContract, data.address];
     }
@@ -84,7 +84,7 @@ export const loadExchange = async (web3: Web3) => {
 export const loadStacking = async (web3: Web3) => {
   try {
     let networkId = Object.keys(Stacking.networks)[0] as keyof typeof Stacking.networks;
-    const data = Stacking.networks[networkId];
+    const data: any = Stacking.networks[networkId];
     if (data) {
       const stackingContract: any = new web3.eth.Contract(Stacking.abi as unknown as AbiItem, data.address);
       console.log('Stacking: ', data.address)
@@ -101,7 +101,7 @@ export const loadStacking = async (web3: Web3) => {
 export const loadStakerContract  = async (web3: Web3) => {
   try {
     let networkId = Object.keys(StakerContract.networks)[0] as keyof typeof StakerContract.networks;
-    const data = StakerContract.networks[networkId];
+    const data: any = StakerContract.networks[networkId];
     if (data) {
       const tokenContract = new web3.eth.Contract(StakerContract.abi  as unknown as AbiItem, data.address);
    //  const name = await token.methods.symbol().call();

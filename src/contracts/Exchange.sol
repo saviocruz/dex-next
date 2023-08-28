@@ -77,10 +77,8 @@ contract Exchange is ReentrancyGuard  {
                 items[currentIndex] = currentItem;
                 currentIndex += 1;
             }
-            
-        
         }
-    
+
         return items;
     }
 

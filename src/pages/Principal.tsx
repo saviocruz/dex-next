@@ -52,7 +52,7 @@ const Principal = ({ nav, setNav }: any) => {
 		const tokenName: string = await dados.token.methods.symbol().call()
 
 		let bl = await web3.eth.getBlockNumber() 
-		console.log(bl)
+		console.log("block ",bl)
 
 
 		dados.account = account

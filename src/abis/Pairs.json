@@ -6675,28 +6675,28 @@
     "version": "0.8.0+commit.c7dfd78e.Emscripten.clang"
   },
   "networks": {
-    "5777": {
+    "1693071170887": {
       "events": {
         "0x40716b676f9ef2268d8b0dc199feb199cec4e882bacdb805db988a5b9f3b7dce": {
           "anonymous": false,
           "inputs": [
             {
               "indexed": true,
+              "internalType": "address",
               "name": "tokenAddress",
-              "type": "address",
-              "internalType": "address"
+              "type": "address"
             },
             {
               "indexed": false,
+              "internalType": "string",
               "name": "symbol",
-              "type": "string",
-              "internalType": "string"
+              "type": "string"
             },
             {
               "indexed": false,
+              "internalType": "address",
               "name": "user",
-              "type": "address",
-              "internalType": "address"
+              "type": "address"
             }
           ],
           "name": "NewAddress",
@@ -6704,12 +6704,12 @@
         }
       },
       "links": {},
-      "address": "0xDE30699ebdEa60A426780765E0C0940649A259bd",
-      "transactionHash": "0xc68e9f08eb54f700365ccffa1416d9ec627c148c3e48834455b6f7797b817ff6"
+      "address": "0x19f4875800A453052A7BbBB4Ff9197d866c0E008",
+      "transactionHash": "0xb90532578c36cf4de18aa869242ee5c2d669194b713a648e183d96c205e4e078"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2022-08-21T18:42:10.541Z",
+  "updatedAt": "2023-08-27T15:07:57.521Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
