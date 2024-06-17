@@ -19,6 +19,7 @@ export default function UserPanel() {
     const [inputUnstake, setInputUnstake] = useState('');
 
     async function deposit() {
+        toast.info('depositando.');
         if (!isNonZeroNumber(inputStake)) {
             toast.error('No amount entered.');
             return;

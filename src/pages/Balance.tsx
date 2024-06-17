@@ -70,7 +70,7 @@ const showForm = (props: IProp, myOrders: any, events: IEvents) => {
 
     return (
         <div>
-            <Tabs defaultActiveKey={"deposit"} id="deposit" className=" text-white">
+            <Tabs defaultActiveKey={"deposit"} id="deposit" >
                 <Tab eventKey={"deposit"} title={"Deposita"} className={"bg-transparent"} >
                     <BalanceTable hasHead={true} tokenName={"ETH"} walletAmount={etherBalance} exchangeAmount={exchangeEtherBalance} />
                     <BalanceForm
@@ -137,7 +137,6 @@ const Balance = ({ dados, events }: Props) => {
 
     async function loadWallet() {
         const { web3, account, exchange, token } = dados;
-        console.log(token)
         const [orders, filledOrders, myOrders, myFilledOrders, cancelledOrdersOnToken, filledOrdersOnToken, allOrdersOnToken] =
             await loadOrders(exchange, token, account)
 
@@ -166,12 +165,12 @@ const Balance = ({ dados, events }: Props) => {
 
         events.updateDados({ ...dados, etherBalance: etherBalance })
         events.updateDados({ ...dados, exchangeEtherBalance: exchangeEtherBalance })
-        console.log(dados)
+    //    console.log(dados)
 
     }
 
     return (
-        <div className="card  bg-transparent text-white">
+        <div className="card  bg-transparent ">
             <div className="card-header">
                 Saldos da Plataforma
             </div>

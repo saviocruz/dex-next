@@ -14,7 +14,7 @@ const showStack = (nav: INav, stackes: any, setStackes: any, stackAmount: any, s
                 return (
                     <div
                         key={index}
-                        className="text-white text-right stacking-pool"
+                        className="text-right stacking-pool"
                     >
                         <div className="stacking-head">
                             <h6> {stack.name} ({stack.symbol}) </h6>

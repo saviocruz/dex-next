@@ -43,7 +43,7 @@ module.exports = async function (deployer) {
 	const stacking = await Stacking.deployed()
 	await stacking.add(100, MyERC20.address, false)
 
-  await idt.transferOwnership(Stacking.address)
+	await idt.transferOwnership(Stacking.address)
 
 	let exchange = await deployer.deploy(Exchange, feeAccount, feePercent);
 	let amount = web3.utils.toWei("1", 'ether')
@@ -89,7 +89,7 @@ module.exports = async function (deployer) {
 	const lpToken = await MockERC20.at(tokens[1]);
 	await lpToken.mint(accounts[1], web3.utils.toWei("1000000"));
 	await lpToken.mint(accounts[2], web3.utils.toWei("1000000"));
-	
+
 	depositToken = tokens[1];
 	rewardToken = tokens[0];
 	await deployer.deploy(Staker, depositToken, rewardToken);

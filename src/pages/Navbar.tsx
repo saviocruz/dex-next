@@ -53,8 +53,8 @@ const Navbar = ({ dados, events }: Props) => {
 
         return (
           
-            <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-                <ul className="navbar-nav ml-auto">
+            <nav className="navbar navbar-expand-lg">
+                <ul className="navbar-nav ml-auto bg-primary">
                     <li className="nav-item" title='{dados.account}'>
                     <Dropdown>
                         <Dropdown.Toggle size="sm" id="dropdown-basic">

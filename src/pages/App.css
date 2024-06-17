@@ -1,11 +1,11 @@
 body{
-    background-color: rgb(174, 190, 236) !important;
+/*    background-color: rgb(53, 73, 134) !important; */
     background-position: 0px -100px;
     height:100% !important;
     width:100% !important;
     scrollbar-width: thin;
     scrollbar-color: var(--thumbBG) var(--scrollbarBG);
-    /* border: 2PX solid #ba277f;   */
+    border: 2PX solid #000000;    
 }
 .admin{
   margin:10px;
@@ -21,7 +21,7 @@ body{
       z-index:1;
   }
 .underline{
-    border-bottom: 2PX solid #c5b8c0;  
+    border-bottom: 2PX solid #000000;  
 }
 
 .exchange{
@@ -70,7 +70,7 @@ main{
 }
 
 .btn-custom {
-    background-color: #998892;
+    background-color: #888b99;
     border:0px;
     display: inline-block;
     width:fit-content;
@@ -310,7 +310,7 @@ main{
      max-width:500px;
     margin: auto;  
     border-radius: 20px;  
-    background: #000000;  
+    background: #e4e9e7;  
     border:1px solid  #77ccc8;
     z-index: 9999;
     display: block;

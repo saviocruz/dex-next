@@ -30,7 +30,7 @@ const Trades = ({ dados, events }: Props) => {
    
     return (
         <div className="vertical">
-            <div className="card bg-transparent text-white">
+            <div className="card bg-transparent">
                 <div className="card-header">
                     Trades
                 </div>

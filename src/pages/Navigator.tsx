@@ -1,17 +1,21 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap'
 import Spinner from './Spinner'
+import { INav } from './lib/type';
+ 
 
-import { INav } from '.';
+const showAdminPanel = (nav: INav, setNav: any) => {
 
-const showAdminPanel = (dados: any) => {
-
-  if (dados.admin === true) {
+  console.log(nav.showAdmin)
+  if (nav.admin === true) {
     return (
-      <div className="admin-panel text-white text-xm">
+      <div >
         <button
           className="btn btn-primary btn-block btn-sm btn-custom"
-          onClick={() => (dados.admin = true)}>Admin</button>
+          onClick={() => {setNav(true)
+                          console.log(nav.showAdmin) }}>
+              Admin
+        </button>
       </div>
     )
   }
@@ -36,17 +40,18 @@ const Navigator = ({ nav, setNav }: Props) => {
 
   return (
 
-    <Navbar  variant="dark" collapseOnSelect expand="lg" style={{backgroundColor: "#4B0082"}}>
-      <Navbar.Brand className="brand"  >
+    <Navbar   collapseOnSelect expand="lg" className="bg-primary">
+      <Navbar.Brand   >
         <img
           alt="logo"
           src="/logo.svg"
           width="30"
           height="30"
-          className="d-inline-block align-top brand"
+           
         />
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="responsive-navbar-nav"  />
+ 
       <Navbar.Collapse id="responsive-navbar-nav" >
         <Nav className="">
           <Nav.Link
@@ -69,18 +74,18 @@ const Navigator = ({ nav, setNav }: Props) => {
 
         </Nav>
 
-        <div style={{ marginLeft: "60px", fontSize: "20px" }} className="text-white">
+        <div style={{ marginLeft: "60px", fontSize: "20px" }}  >
           Plataforma DEX experimental
         </div>
 
-        <div style={{ marginLeft: "160px", fontSize: "12px" }} className="text-white">
+        <div style={{ marginLeft: "160px", fontSize: "12px" }}  >
           {carregado === true ? account : <Spinner type="tbl" />}
         </div>
       </Navbar.Collapse>
 
 
       <div>
-        {carregado === true ? showAdminPanel(nav) : <Spinner type="tbl" />}
+        {carregado === true ? showAdminPanel(nav, setNav) : <Spinner type="tbl" />}
       </div>
     </Navbar >
 

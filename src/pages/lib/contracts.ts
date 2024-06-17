@@ -13,10 +13,9 @@ export const loadAvailableTokens = async (web3: Web3, pairs: any) => {
   let tokenPairs = [];
   for (let i = 0; i < numberOfTokens; i++) {
     let tokenAddress = await pairs.methods.addresses(i).call();
-    let token = new web3.eth.Contract(ERC20.abi as unknown as AbiItem, tokenAddress);
+    let token = new web3.eth.Contract(ERC20.abi as any, tokenAddress);
     //  let [token]: any = await loadTokenAddress(web3, tokenAddress)
     let name = await token.methods.symbol().call();
-
     tokenPairs.push([tokenAddress, name]);
   }
   return tokenPairs;
@@ -46,6 +45,8 @@ export const loadListaCredencial = async (credencialContract: any) => {
 
 export const isAdmin = async (exchange: any, account: any) => {
   //Checking if user is contract owner
+
+  console.log(account)
   const admin = await exchange.methods.isAdmin().call({ from: account })
   return admin
 }

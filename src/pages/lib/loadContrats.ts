@@ -8,14 +8,14 @@ import StakerContract from '../../abis/Staker.json'
 import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
 
-export const loadToken  = async (web3: Web3) => {
+export const loadToken = async (web3: Web3) => {
   try {
     let networkId = Object.keys(MyERC20.networks)[0] as keyof typeof MyERC20.networks;
     const data: any = MyERC20.networks[networkId];
     if (data) {
-      const tokenContract = new web3.eth.Contract(MyERC20.abi  as unknown as AbiItem, data.address);
-   //  const name = await token.methods.symbol().call();
-      console.log('token adrres: ',data.address)
+      const tokenContract = new web3.eth.Contract(MyERC20.abi as any, data.address);
+      //  const name = await token.methods.symbol().call();
+      console.log('token adrres: ', data.address)
       return [tokenContract, data.address];
     }
   }
@@ -25,14 +25,15 @@ export const loadToken  = async (web3: Web3) => {
   return null;
 }
 
-export const loadTokenAddress  = async (web3: Web3, address: string) => {
+export const loadTokenAddress = async (web3: Web3, address: string) => {
   try {
-      
-      const tokenContract = new web3.eth.Contract(ERC20.abi  as unknown as AbiItem,  address);
-      const tokenName = await tokenContract.methods.symbol().call();
-      console.log('token adrres: ',address)
-      return [tokenContract, address, tokenName];
-   
+
+    const tokenContract = new web3.eth.Contract(ERC20.abi as any, address);
+    //const tokenContract = new web3.eth.Contract(ERC20.abi  as unknown as AbiItem,  address);
+    const tokenName = await tokenContract.methods.symbol().call();
+    console.log('token adrres: ', address)
+    return [tokenContract, address, tokenName];
+
   }
   catch (err) {
     window.alert("Token não publicado neste rede.");
@@ -47,14 +48,14 @@ export const loadSaldo = async (account: string, _spender: string) => {
   return [aprovado, tokenBalance]
 }
 
-export const loadPairs  = async (web3: Web3) => {
+export const loadPairs = async (web3: Web3) => {
   try {
     let networkId = Object.keys(Pairs.networks)[0] as keyof typeof Pairs.networks;
     const data: any = Pairs.networks[networkId];
-    
+
     if (data) {
-      const pairsContract = new web3.eth.Contract(Pairs.abi  as unknown as AbiItem, data.address);
-      console.log('pairs adrres: ',data.address)
+      const pairsContract = new web3.eth.Contract(Pairs.abi as any, data.address);
+      console.log('pairs adrres: ', data.address)
       return [pairsContract, data.address];
     }
   }
@@ -69,7 +70,7 @@ export const loadExchange = async (web3: Web3) => {
     let networkId = Object.keys(Exchange.networks)[0] as keyof typeof Exchange.networks;
     const data: any = Exchange.networks[networkId];
     if (data) {
-      const exchangeContract = new web3.eth.Contract(Exchange.abi as unknown as AbiItem, data.address);
+      const exchangeContract = new web3.eth.Contract(Exchange.abi as any, data.address);
       console.log('exchange: ', data.address)
       return [exchangeContract, data.address];
     }
@@ -86,7 +87,7 @@ export const loadStacking = async (web3: Web3) => {
     let networkId = Object.keys(Stacking.networks)[0] as keyof typeof Stacking.networks;
     const data: any = Stacking.networks[networkId];
     if (data) {
-      const stackingContract: any = new web3.eth.Contract(Stacking.abi as unknown as AbiItem, data.address);
+      const stackingContract: any = new web3.eth.Contract(Stacking.abi as any, data.address);
       console.log('Stacking: ', data.address)
       return [stackingContract, data.address];
     }
@@ -98,14 +99,14 @@ export const loadStacking = async (web3: Web3) => {
 }
 
 
-export const loadStakerContract  = async (web3: Web3) => {
+export const loadStakerContract = async (web3: Web3) => {
   try {
     let networkId = Object.keys(StakerContract.networks)[0] as keyof typeof StakerContract.networks;
     const data: any = StakerContract.networks[networkId];
     if (data) {
-      const tokenContract = new web3.eth.Contract(StakerContract.abi  as unknown as AbiItem, data.address);
-   //  const name = await token.methods.symbol().call();
-      console.log('StakerContract adrres: ',data.address)
+      const tokenContract = new web3.eth.Contract(StakerContract.abi as any, data.address);
+      //  const name = await token.methods.symbol().call();
+      console.log('StakerContract adrres: ', data.address)
       return [tokenContract, data.address];
     }
   }

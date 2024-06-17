@@ -1,4 +1,3 @@
-
 import 'bootstrap/dist/css/bootstrap.css';
 import Principal from './Principal'
 import Navigator from './Navigator';
@@ -9,28 +8,10 @@ import { isAdmin } from './lib/contracts';
 import { loadExchange } from './lib/loadContrats';
 import Stack from './Stack';
 import StakeTime from './StakeTime';
+import { INav, iniNav } from './lib/type';
 
 
-export interface INav {
-  web3: any;
-  account: string;
-  staking: any;
-  exchange: any;
-  token: any;
-  admin: boolean;
-  carregado: boolean;
-  content: string;
-}
-const iniNav = {
-  web3: {},
-  account: "",
-  staking: null,
-  exchange: null,
-  token: null,
-  admin: false,
-  carregado: false,
-  content: "<Principal/> "
-}
+
 
 const Home = () => {
   const [account, setAccount] = useState<String>()
@@ -59,7 +40,8 @@ const Home = () => {
       staking: null,
       admin: admin,
       carregado: true,
-      content: "Dex"
+      content: "Dex",
+      showAdmin: false
     })
   }
 
@@ -68,6 +50,7 @@ const Home = () => {
     <div >
       <main  >
         <Navigator nav={nav} setNav={setNav} />
+        <br/>
         {nav.content === 'Dex' && nav.carregado === true ? <Principal nav={nav} setNav={setNav} /> : null}
         {nav.content === 'Stake' && nav.carregado === true ? <Stack nav={nav} setNav={setNav} /> : null}
         {nav.content === 'StakeTime' && nav.carregado === true ? <StakeTime nav={nav} setNav={setNav} /> : null}

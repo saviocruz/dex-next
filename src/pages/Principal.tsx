@@ -52,8 +52,7 @@ const Principal = ({ nav, setNav }: any) => {
 		const tokenName: string = await dados.token.methods.symbol().call()
 
 		let bl = await web3.eth.getBlockNumber() 
-		console.log("block ",bl)
-
+		console.log("bloco atual:  ",bl)
 
 		dados.account = account
 		dados.web3 = web3
@@ -62,25 +61,17 @@ const Principal = ({ nav, setNav }: any) => {
 		dados.tokenName = tokenName;
 		dados.tokenPairs = tokenPairs
 
-	// 	dados.myFilledOrders = {}
-//	 	dados.myOpenOrders = {}
-//	 	dados.filledOrders = {}
-
 		updateDados(dados)
 		setCarregado(true)
-		let event: IEvents = { updateDados: updateDados, setResult: setResult, setShow: setShow, setCarregado: setCarregado }
+		let event: IEvents = { updateDados: updateDados, setResult: setResult, setShow: setShow, setCarregado: setCarregado, setNav: setNav }
 		setEvents(event)
+		console.log(dados) ;
 	}
-
 
 	return (
 		<>
-			{nav.content === 'Dex'  && (
-				<div>
-				{ carregado && dados.showAdmin ? <Admin dados={dados} events={events} /> : <div> <Spinner type="tbl" /> Verificando Admin</div>}
-				{ carregado ? <Content dados={dados} events={events} /> : <div> <Spinner type="tbl" /> Carregando plataforma</div>}
-				</div>
-			)}
+	        { nav.showAmdin ? <Admin dados={dados} events={events} />  : <div>  </div>}
+			{ carregado && !nav.showAmdin ? <Content dados={dados} events={events} /> : <div> <Spinner type="tbl" /></div>}
 			<Mensagem msg={result.msg} desc={result.desc} gas={result.gas} show={show} setShow={setShow} setCarregado={result.setCarregado} data={dados} />
 		</ >
 	);

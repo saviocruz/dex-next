@@ -8,7 +8,7 @@ import { IMensagem } from '../../pages/Mensagem';
 export const loadAllOrders = async (exchange: any, token: any) => {
     // cacelled orders
   //  console.log("cancelledOrdersOnToken1")
-    let bloc = 200
+    let bloc = 30
     const cancelStream = await exchange.getPastEvents('Cancel', { fromBlock: bloc, toBlock: 'latest' })
    // console.log("cancelledOrdersOnToken2")
     //format cancelled orders
@@ -444,7 +444,7 @@ export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvent
 export async function loadOrders(exchangeContract: any, tokenContract: any, account: string) {
     const [cancelledOrders, cancelledOrdersOnToken, filledOrders, filledOrdersOnToken, allOrders, allOrdersOnToken]: any =
         await loadAllOrders(exchangeContract, tokenContract);
-    console.log(tokenContract)
+   // console.log(tokenContract)
     // BUSCA TODAS ORDENS ABERTAS
     let orders: any = openOrders(allOrdersOnToken, filledOrdersOnToken, cancelledOrdersOnToken);
     orders = await orderBookSelector(orders);	// buyOrders //sellOrders

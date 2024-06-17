@@ -16,8 +16,8 @@ const showMyFilledOrders = (props: IProp) => {
           return (
             <tr key={order._id} >
               <td className={`text-${order.orderTypeClass}`}>
-                {order._user === account && (<span>D </span>)}
-                {order._userFill === account && (<span>P </span>)}
+                {order._user === account && (<span>*</span>)}
+                {order._userFill === account && (<span>+ </span>)}
                 {order._id}
               </td>
 
@@ -25,8 +25,8 @@ const showMyFilledOrders = (props: IProp) => {
               <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
               <td className="text-muted">{order.formattedTimestamp}</td>
               <td className="text-muted">
-                <span title={order._user}> D </span>
-                <span title={order._userFill}> P </span>
+                <span title={order._user}> <a href=''> C</a> </span>
+                <span title={order._userFill}> <a href=''>E</a></span>
               </td>
 
             </tr>
@@ -74,14 +74,14 @@ interface Props {
 const MyTransactions = ({ dados, events }: Props) => {
  
   return (
-    <div className="card bg-transparent text-white">
+    <div className="card bg-transparent">
       <div className="card-header">
         Minhas Transações
       </div>
       <div className="card-body">
-        <Tabs defaultActiveKey="trades" className="text-white tabs">
+        <Tabs defaultActiveKey="trades" className="tabs">
           <Tab eventKey="trades" title="Trade" className="bg-transparent tabs">
-            <table className="table bg-transparent text-white table-sm small">
+            <table className="table bg-transparent table-sm small">
               <thead>
                 <tr>
                   <th>ID</th>
@@ -95,8 +95,8 @@ const MyTransactions = ({ dados, events }: Props) => {
               {dados.myFilledOrders.length > 0   ? showMyFilledOrders(dados) :<Spinner type="table" />}
             </table>
           </Tab>
-          <Tab eventKey="orders" title="Orders" className="text-white tabs">
-            <table className="table bg-transparent text-white table-sm small">
+          <Tab eventKey="orders" title="Orders" className="tabs">
+            <table className="table bg-transparent table-sm small">
               <thead>
                 <tr>
                   <th>ID</th>

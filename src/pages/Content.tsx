@@ -16,6 +16,8 @@ import NewOrder from './NewOrder';
 import OrderBook from './OrderBook';
 import PriceChart from './PriceChart';
 import Trades from './Trades';
+import Admin from './Admin';
+import Spinner from './Spinner';
 
 
 interface Props {
@@ -35,6 +37,8 @@ const Content = ({ dados, events }: Props) => {
     }
 
     return (
+        <div>
+
         <div className="exchange" >
 
             <div className="vertical-split">
@@ -42,7 +46,7 @@ const Content = ({ dados, events }: Props) => {
                 <Balance dados={dados} events={events} />
                 <NewOrder dados={dados} events={events} />
             </div>
-            <div style={{ minWidth: "400px" }}>
+            <div style={{ minWidth: "470px" }}>
                 <OrderBook dados={dados} events={events} />
             </div>
             <div className="vertical-split">
@@ -50,6 +54,7 @@ const Content = ({ dados, events }: Props) => {
                 <PriceChart dados={dados} events={events} />
             </div>
             <Trades dados={dados} events={events} />
+        </div>
         </div>
     );
 }

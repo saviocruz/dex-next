@@ -1,10 +1,37 @@
+
 import { IMensagem } from "../Mensagem";
+
+
+export interface INav {
+  web3: any;
+  account: string;
+  staking: any;
+  exchange: any;
+  token: any;
+  admin: boolean;
+  carregado: boolean;
+  content: string;
+  showAdmin: boolean;
+}
+export const iniNav = {
+  web3: {},
+  account: "",
+  staking: null,
+  exchange: null,
+  token: null,
+  admin: false,
+  carregado: false,
+  content: "<Principal/> ",
+  showAdmin: false
+}
+
 
 export interface IEvents{
   updateDados: (dados: IProp) => void;
   setResult: (msg: IMensagem) => void;
   setShow: (a: boolean) => void;
   setCarregado: (a: boolean) => void;
+  setNav: (nav: INav) => void;
 }
 
 export const inicialEvents = {
@@ -12,6 +39,7 @@ export const inicialEvents = {
   setResult: (msg: IMensagem)  =>   {},
   setShow:  (a: boolean) =>   {true},
   setCarregado:  (a: boolean) =>   {false},
+  setNav:  (nav: INav) =>   {},
 } 
 export interface IProp {
   web3: any;
@@ -57,7 +85,6 @@ export interface IProp {
 
   priceChart: any;
 
-  showAdmin: boolean;
 }
 
 export const estadoInicialNFT = {

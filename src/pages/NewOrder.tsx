@@ -71,7 +71,7 @@ const showForm = (props: IProp, events: IEvents, ultimoPreco: number, setUltimoP
     else {
 
         return (
-            <Tabs defaultActiveKey="buy" className="bg-transparent  text-white" id="tabBuy">
+            <Tabs defaultActiveKey="buy" className="bg-transparent" id="tabBuy">
                 <Tab className="bg-transparent " title="Compra" eventKey="buy">
                     <OrderForm
                         onSubmit={buyOrderOnSubmit}
@@ -90,7 +90,7 @@ const showForm = (props: IProp, events: IEvents, ultimoPreco: number, setUltimoP
                         amountOnChange={sellAmountChanged}
                         priceOnChange={sellPriceChanged}
                         buttonText={"Ordem Venda"}
-                        buyOrSell={"Sell"}
+                        buyOrSell={"Venda"}
                         tokenName={tokenName}
                         ultimoPreco={ultimoPreco}
                     />
@@ -122,7 +122,7 @@ const NewOrder = ({ dados, events }: Props) => {
      }
   */
     return (
-        <div className="card bg-transparent text-white">
+        <div className="card bg-transparent">
             <div className="card-header">
                 Criar Ordem Limite
             </div>

@@ -20,7 +20,7 @@ const OrderForm = (props: any) => {
                         min="0"
                         placeholder="quantidade"
                         onChange={amountOnChange}
-                        className="form-control form-control-sm bg-transparent  text-white"
+                        className="form-control form-control-sm bg-transparent "
                         required />
                 </div>
             </div>
@@ -33,7 +33,7 @@ const OrderForm = (props: any) => {
                         placeholder="preço"
                         onChange={priceOnChange}
                         value={ultimoPreco}
-                        className="form-control form-control-sm bg-transparent  text-white"
+                        className="form-control form-control-sm bg-transparent"
                         required />
                 </div>
             </div>

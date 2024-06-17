@@ -82,12 +82,12 @@ const OrderBook = ({ dados, events }: Props) => {
     // console.log(dados)
     return (
         <div className="vertical">
-            <div className="card bg-transparent text-white">
+            <div className="card bg-transparent">
                 <div className="card-header">
                     Livro de Ordens
                 </div>
                 <div className="card-body order-book">
-                    <table className="table bg-transparent text-white table-sm small">
+                    <table className="table bg-transparenttable-sm small">
                         {showOrderBook(dados, events)}
                     </table>
                 </div>
