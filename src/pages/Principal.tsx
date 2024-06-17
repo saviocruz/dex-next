@@ -58,22 +58,23 @@ const Principal = ({ nav, setNav }: any) => {
 		dados.web3 = web3
 		dados.exchange = exchangeContract
 		dados.pairs = pairsContract
-		dados.tokenName = tokenName;
+		dados.tokenName = tokenName
 		dados.tokenPairs = tokenPairs
+		dados.nav = nav
 
 		updateDados(dados)
 		setCarregado(true)
 		let event: IEvents = { updateDados: updateDados, setResult: setResult, setShow: setShow, setCarregado: setCarregado, setNav: setNav }
 		setEvents(event)
-		console.log(dados) ;
+	//	console.log(dados) ;
 	}
 
 	return (
-		<>
-	        { nav.showAmdin ? <Admin dados={dados} events={events} />  : <div>  </div>}
-			{ carregado && !nav.showAmdin ? <Content dados={dados} events={events} /> : <div> <Spinner type="tbl" /></div>}
+		<div>
+	        { nav.showAdmin ? <Admin dados={dados} events={events} />  : <div>  </div>}
+			{ carregado && !nav.showAdmin ? <Content dados={dados} events={events} /> : <div> <Spinner type="tbl" /></div>}
 			<Mensagem msg={result.msg} desc={result.desc} gas={result.gas} show={show} setShow={setShow} setCarregado={result.setCarregado} data={dados} />
-		</ >
+		</div >
 	);
 }
 export default Principal;

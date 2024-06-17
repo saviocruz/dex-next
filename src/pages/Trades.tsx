@@ -44,8 +44,7 @@ const Trades = ({ dados, events }: Props) => {
                                 <th>Time</th>
                             </tr>
                         </thead>
-                         {filledOrders.length > 0   ? showFilledOrders(dados.filledOrders ) : <Spinner type="table" />}
-
+                         {filledOrders.length > 0   ? showFilledOrders(dados.filledOrders ) : <tbody><tr><td>Não há ordens</td></tr></tbody>}
                     </table>
                 </div>
             </div>

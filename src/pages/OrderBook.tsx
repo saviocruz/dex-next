@@ -21,7 +21,7 @@ const renderOrder = (order: any, dados: IProp, events: IEvents, carregado: boole
                 <td>{order.tokenAmount}</td>
 
                 <td className={`text-${order.orderTypeClass}`}>{order.tokenPrice}</td>
-                <td>{order.etherAmount}</td>
+                <td>{order.etherAmount.toFixed(4)}</td>
 
                 <td style={{ fontSize: "12px" }}> {order.formattedTimestamp}</td>
 
@@ -51,6 +51,7 @@ const showOrderBook = (dados: any, events: IEvents) => {
 
     return (
         <tbody key={token.options.address}>
+            <tr><td colSpan={6}> Ordem de venda</td></tr>
             <tr>
                 <th>ID</th>
                 <th>{tokenName}</th>
@@ -60,7 +61,8 @@ const showOrderBook = (dados: any, events: IEvents) => {
                 <th>Opçao</th>
             </tr>
             {orderBook.sellOrders.map((order: any) => renderOrder(order, dados, events, carregado, setCarregado, orderID, setOrderID))}
-            <tr>
+            <tr><td colSpan={6}> Ordem de compra</td></tr>
+           <tr>
                 <th>ID</th>
                 <th>{tokenName}</th>
                 <th title='Preço'>{tokenName}/ETH</th>
@@ -81,7 +83,7 @@ interface Props {
 const OrderBook = ({ dados, events }: Props) => {
     // console.log(dados)
     return (
-        <div className="vertical">
+        <div >
             <div className="card bg-transparent">
                 <div className="card-header">
                     Livro de Ordens

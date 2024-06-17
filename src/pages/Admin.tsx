@@ -42,7 +42,7 @@ interface Props {
 
 const Admin = ({ dados, events}: Props) => {
     const [rtoken, setRtoken] = useState<any>()
-    let navLocal: INav =iniNav
+    let navLocal: INav = dados.nav
     navLocal.showAdmin = false;
     const buyOrderOnSubmit = async (e: any) => {
         e.preventDefault();
@@ -80,11 +80,11 @@ const Admin = ({ dados, events}: Props) => {
                             <button type="submit" className="btn btn-primary btn-block btn-sm btn-custom">Register Token</button>
                         </div>
                     </form>
-     
-              Admin
+ 
                     <button
                         className="btn btn-primary btn-block btn-sm btn-custom"
-                        onClick={() => {events.setNav({...navLocal,showAdmin:false})}}  >Fechar</button>
+                        onClick={() => {events.setNav({...navLocal,showAdmin:false})
+                                        console.log(dados)}}  >Fechar</button>
                 </div>
  
         </div>

@@ -4,10 +4,9 @@ import Web3 from 'web3';
 
 import { ETHUnit } from '../../pages/lib/helpers';
 import ERC20 from '../../abis/ERC20.json'
-import { IEvents, IMsg, IProp, IPropBalance, msgInicial } from '../../pages/lib/type';
+import { IEvents, IMsg, INav, IProp, IPropBalance, msgInicial } from '../../pages/lib/type';
 import { IMensagem } from '../../pages/Mensagem';
 import { gerarMensagem } from './orders';
-import { INav } from '../../pages';
 import { AbiItem } from 'web3-utils';
 
 
@@ -53,11 +52,13 @@ export const stackToken = async (dados: INav, token: any, amount: any, id: any, 
   console.log('stackToken: ', amount)
   const tokenx = new web3.eth.Contract(ERC20.abi as unknown as AbiItem, token)
   amount = web3.utils.toWei(amount.toString(), 'ether')
+  console.log(amount)
   await tokenx.methods.approve(staking.options.address, amount).send({ from: account })
     .on('transactionHash', async (hash: any) => {
       console.log('IS APPROVED')
-    }).then(async () => {
-      await staking.methods.deposit(amount, id).send({ from: account })
+    })
+
+   await staking.methods.deposit(amount, id).send({ from: account })
         .on('transactionHash', async (hash: any) => {
           console.log('transactionHash stackToken', hash)
         }).then(async () => {
@@ -67,7 +68,7 @@ export const stackToken = async (dados: INav, token: any, amount: any, id: any, 
               console.log(balance)
             })
         })
-    })
+   
 }
 
 
@@ -91,12 +92,16 @@ export const unStackToken = async (nav: INav, token: any, amount: any, id: any, 
 
 export const getResult = async (stacking: any, account: any, id: any, web3: any) => {
   console.log('START')
-  let ret1 = await stacking.methods.pendingIDT(id).call({ from: account })
+
+  let ret5  = await stacking.methods.poolLength().call() ;
+  console.log(id)
+  let ret1 = await stacking.methods.pendingIDT(id).call( );
+  console.log(ret1 )
   let ret2 = await stacking.methods.getMultiplierView(id).call({ from: account })
-  let ret3 = await stacking.methods.getWithdraw(id).call({ from: account })
+   let ret3 = await stacking.methods.getWithdraw(id).call({ from: account })
   let ret4 = await stacking.methods.update(id).call({ from: account })
-  let ret = await stacking.methods.getIdtReward(id).call()
-  console.log(ret, ret1, ret2, ret3, ret4)
+  let ret = await stacking.methods.getIdtReward(id).call({ from: account })
+  console.log(ret, ret1,   ret3, ret4, )
 
 
 }

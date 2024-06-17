@@ -11,7 +11,7 @@ const selectPairToken = async (tokenAddress: any, dados: IProp, updateDados: any
     const {web3,  exchange , account } = dados
     const [token]: any = await loadTokenAddress(web3, tokenAddress[0]);
     
-    console.log(token)
+//    console.log(token)
     if (!token) {
         alert('Token not loaded, please load a network with token');
     }
@@ -31,11 +31,11 @@ const selectPairToken = async (tokenAddress: any, dados: IProp, updateDados: any
     
     
     dados = updateForm([etherBalance, exchangeEtherBalance, tokenBalance, exchangeTokenBalance] , dados)
-     updateDados({...dados, etherBalance: etherBalance}) 
+    updateDados({...dados, etherBalance: etherBalance}) 
     updateDados({...dados, tokenBalance: tokenBalance}) 
     updateDados({...dados, exchangeTokenBalance: exchangeTokenBalance}) 
 
-    console.log(dados)
+    //console.log(dados)
 }
 
 const renderMenuItem = (token: any, dados: any, updateDados: any, key: any) => {

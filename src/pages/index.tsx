@@ -32,6 +32,8 @@ const Home = () => {
     setNav({ ...nav, admin: admin })
     setNav({ ...nav, carregado: true })
     setNav({ ...nav, content: "Dex" })
+    setNav({ ...nav, showAdmin: false })
+
     setNav({
       web3: web3,
       account: account[0],

@@ -11,13 +11,13 @@ const showMyFilledOrders = (props: IProp) => {
 
  
     return (
-      <tbody>
+      <tbody style={{overflowX: "scroll"}}>
         {myFilledOrders?.map((order: any) => {
           return (
             <tr key={order._id} >
               <td className={`text-${order.orderTypeClass}`}>
                 {order._user === account && (<span>*</span>)}
-                {order._userFill === account && (<span>+ </span>)}
+                {order._userFill === account && (<span></span>)}
                 {order._id}
               </td>
 
@@ -79,8 +79,8 @@ const MyTransactions = ({ dados, events }: Props) => {
         Minhas Transações
       </div>
       <div className="card-body">
-        <Tabs defaultActiveKey="trades" className="tabs">
-          <Tab eventKey="trades" title="Trade" className="bg-transparent tabs">
+        <Tabs defaultActiveKey="trades" className="tabs" >
+          <Tab eventKey="trades" title="Trade" className="bg-transparent tabs" id='trades'>
             <table className="table bg-transparent table-sm small">
               <thead>
                 <tr>
@@ -92,7 +92,7 @@ const MyTransactions = ({ dados, events }: Props) => {
                   <th>Time</th>
                 </tr>
               </thead>
-              {dados.myFilledOrders.length > 0   ? showMyFilledOrders(dados) :<Spinner type="table" />}
+              {dados.myFilledOrders.length > 0   ? showMyFilledOrders(dados) :<tbody><tr><td>Não há ordens</td></tr></tbody>}
             </table>
           </Tab>
           <Tab eventKey="orders" title="Orders" className="tabs">
@@ -105,7 +105,7 @@ const MyTransactions = ({ dados, events }: Props) => {
                   <th>Cancel</th>
                 </tr>
               </thead>
-              {(dados.myOpenOrders.length > 0 ) ? showMyOpenOrders(dados, events) : <Spinner type="table" />}
+              {(dados.myOpenOrders.length > 0 ) ? showMyOpenOrders(dados, events) : <tbody><tr><td>Não há ordens</td></tr></tbody>}
             </table>
           </Tab>
         </Tabs>
@@ -116,13 +116,3 @@ const MyTransactions = ({ dados, events }: Props) => {
 }
 
 export default MyTransactions;
-
-
-
-
-
-
-
-
-
-

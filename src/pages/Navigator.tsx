@@ -5,15 +5,13 @@ import { INav } from './lib/type';
  
 
 const showAdminPanel = (nav: INav, setNav: any) => {
-
-  console.log(nav.showAdmin)
   if (nav.admin === true) {
     return (
       <div >
         <button
           className="btn btn-primary btn-block btn-sm btn-custom"
-          onClick={() => {setNav(true)
-                          console.log(nav.showAdmin) }}>
+          onClick={() => {nav.showAdmin = true
+                          setNav({...nav,showAdmin: true})  }}>
               Admin
         </button>
       </div>

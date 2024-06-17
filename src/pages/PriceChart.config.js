@@ -22,7 +22,7 @@ export const chartOptions = {
   },
   tooltip: {
     enabled: true,
-    theme: false,
+    theme: "false",
     colors:'#000',
     
     style: {
@@ -36,7 +36,7 @@ export const chartOptions = {
     },
     y: {
       show: true,
-      title: 'price',
+      title: "price",
     },
     marker: {
       show: false,

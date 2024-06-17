@@ -3,7 +3,8 @@ import Spinner from './Spinner'
 
 import { getResult, loadStackData, stackToken, unStackToken } from '../store/interactions/stacking'
 import { loadStacking } from './lib/loadContrats'
-import { INav } from '.'
+import { INav } from './lib/type'
+ 
 
 const showStack = (nav: INav, stackes: any, setStackes: any, stackAmount: any, setStackAmount: any) => {
     const { web3,  staking, account } = nav
@@ -43,7 +44,7 @@ const showStack = (nav: INav, stackes: any, setStackes: any, stackAmount: any, s
 
                             <form onSubmit={(event) => {
                                 event.preventDefault()
-                                stackToken(nav, stack.tokenStack, stackAmount, index, setStackes)
+                                stackToken(nav, stack.tokenStack, stackAmount, index-1, setStackes)
                             }}>
                                 <div className="stack-form">
                                     <div className="stack-pending">{parseFloat(web3.utils.fromWei(stack.pending, 'kwei')).toFixed(3)}</div>

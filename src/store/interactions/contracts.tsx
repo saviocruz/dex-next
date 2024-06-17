@@ -121,7 +121,7 @@ export function atualiza(dados: IProp, formInput: any, events: IEvents, setCarre
         .then((hash: any) => {
             dados = updateForm(hash, dados)
             gerarMensagem('Operação completada com sucesso.',
-                'Valor operação ' + formInput.etherDepositAmount + ' Ether',
+                'Valor operação ' + formInput.etherDepositAmount + '  ' + dados.tokenName,
                 dados,
                 events, setCarregado)
         })

@@ -84,6 +84,7 @@ export interface IProp {
   showSellTotal: boolean;
 
   priceChart: any;
+  nav: INav;
 
 }
 
@@ -120,8 +121,7 @@ export const estadoInicialNFT = {
   showSellTotal: true,
   tokenPairs: null,
   priceChart: null,
-
-  showAdmin: false
+  nav: iniNav,
 };
 
 export interface IPropBalance {

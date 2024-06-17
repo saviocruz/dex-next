@@ -8,6 +8,7 @@ export interface IMensagem {
     show: boolean;
     setShow: (a: boolean) => void;
     setCarregado: (a: boolean) => void;
+    setOrderID?: (a: number) => void;
     data: any;
 }
 
@@ -23,11 +24,11 @@ export const estadoInicialMensagem = {
 
 const Mensagem = (result: IMensagem) => {
 
-    const { show, setShow, setCarregado } = result
-
+    const { show, setShow, setCarregado, setOrderID, data } = result
     const handleClose = () => {
         setShow(false);
         setCarregado(true)
+
     }
 
     return (
@@ -38,9 +39,9 @@ const Mensagem = (result: IMensagem) => {
                     <Modal.Title>{result?.msg}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>{result?.desc}</Modal.Body>
-                <Modal.Body>{result?.gas}</Modal.Body>
+                <Modal.Body>{result.gas ? result?.gas:''}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={() => handleClose()}>
                         OK
                     </Button>
                 </Modal.Footer>

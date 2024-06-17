@@ -46,7 +46,7 @@ const PriceChart = ({ dados, events }: Props) => {
 
       <div className="card-body " >
 
-        {dados.myFilledOrders.length > 0  && dados.myOpenOrders.length ? showPriceChart(priceChart) : <Spinner type="tbl" />}
+        {dados.myFilledOrders.length > 0  && dados.myOpenOrders.length ? showPriceChart(priceChart) : <div>Sem dados para gráficos</div>}
       </div>
     </div>
   )

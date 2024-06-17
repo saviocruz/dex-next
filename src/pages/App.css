@@ -114,8 +114,9 @@ main{
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: space-evenly;
-    flex-wrap: nowrap
+  /*  justify-content: space-evenly; */
+    flex-wrap: nowrap;
+    margin-top: 10px;
   }
   
   .vertical-split > div {
@@ -305,7 +306,7 @@ main{
   }  
   .popupinner {  
     position: relative; 
-    color:#ffffff; 
+    color:#000000; 
     top:200px;
      max-width:500px;
     margin: auto;  
