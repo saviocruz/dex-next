@@ -21,13 +21,14 @@ const showForm = (props: IProp, events: IEvents, ultimoPreco: number, setUltimoP
         const lastItem = orderBook.buyOrders[0]
         let preco: number = lastItem?._amountGive / lastItem?._amountGet
         console.log(preco)
-        setUltimoPreco(preco)
+        setUltimoPreco(preco.toFixed(4))
         return preco
     }
     const buyAmountChanged = (e: any) => {
         e.preventDefault();
         formInput.buyAmount = e.target.value
         setTotal(formInput.buyPrice * formInput.buyAmount)
+        loadWallet() 
     };
     const buyPriceChanged = (e: any) => {
         e.preventDefault();
@@ -40,6 +41,7 @@ const showForm = (props: IProp, events: IEvents, ultimoPreco: number, setUltimoP
         e.preventDefault();
         formInput.sellAmount = e.target.value
         setTotal(formInput.sellPrice * formInput.sellAmount)
+        loadWallet() 
     };
     const sellPriceChanged = (e: any) => {
         e.preventDefault();
@@ -104,23 +106,9 @@ interface Props {
     dados: IProp;
     events: IEvents;
 }
+
 const NewOrder = ({ dados, events }: Props) => {
     const [ultimoPreco, setUltimoPreco] = useState<number>(0)
-    
-     useEffect(() => {
-       // events.setCarregado(false)
-
-     }, [])
- /*
-     async function loadWallet() {
-         const {orderBook } = dados;
-         const lastItem = orderBook.buyOrders[0]
-         let preco: number = lastItem?._amountGive / lastItem?._amountGet
-         console.log(preco)
-         setUltimoPreco(preco)
-         return preco
-     }
-  */
     return (
         <div className="card bg-transparent">
             <div className="card-header">

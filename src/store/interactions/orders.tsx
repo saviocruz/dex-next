@@ -316,7 +316,6 @@ export const fillOrder = async (order: any, dados: IProp, events: IEvents, setCa
     // check the balance
     if (order._tokenGet === ETHER_ADDRESS) {
         balance = exchangeEtherBalance
-
     } else {
         balance = exchangeTokenBalance
     }
@@ -327,15 +326,23 @@ export const fillOrder = async (order: any, dados: IProp, events: IEvents, setCa
     // console.log('FEE AMOUNT : ',feeAmount)
     console.log('EVAL : ', amount > balance && order._tokenGet === ETHER_ADDRESS)
 
+    if (order._tokenGet === ETHER_ADDRESS)
+        console.log("Compra")
+    else
+        console.log("VENDA")
+
     if (amount > balance && order._tokenGet === ETHER_ADDRESS) {
-        gerarMensagem('Insuficient Balance',
+
+        gerarMensagem('Saldo Insuficiente.',
             'Not enough Ether in your account to fill the order. Please deposit some Ether. Your curently have ' + balance + ' Ether on the exchange.',
-            dados, events, setCarregado) 
+            dados, events, setCarregado)
     } else if (amount > balance && order._tokenGet !== ETHER_ADDRESS) {
-        await gerarMensagem('Saldo Insuficiente', 'Não há ' + tokenName + ' em sua conta da exchange para executar a ordem. \n Deposite '
-            + (amount - balance) + '  de ' + tokenName + '. \n Você possui ' + balance + ' ' + tokenName + ' na exchange.', dados, events, setCarregado  )
-            setOrderID(0)
-          
+
+
+        await gerarMensagem('Saldo Insuficiente.', 'Não há ' + tokenName + ' em sua conta da exchange para executar a ordem. \n Deposite '
+            + (amount - balance) + '  de ' + tokenName + '. \n Você possui ' + balance + ' ' + tokenName + ' na exchange.', dados, events, setCarregado)
+        await setOrderID(0)
+
     } else {
         let hash = await exchange.methods.fillOrder(order._id).send({ from: account })
             //only dispatch the redux action once the hash has come back from the blockchain
@@ -357,7 +364,7 @@ export const fillOrder = async (order: any, dados: IProp, events: IEvents, setCa
 
         console.log('then fillOrder', hash)
         //gerarMensagem('Ordem enviada', 'Aguarde confirmação: Foram enviados ' + amount, dados, events)
-        await atualiza(dados, amount, events, setCarregado, amountGive)
+        await atualizaOrders(dados, amount, events, setCarregado, amountGive)
 
         // setOrderID(0)
 
@@ -368,7 +375,6 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
     const { exchange, token, web3, account, tokenName } = dados
     const { setCarregado } = events
     const tokenGet = token.options.address;
-    console.log(token.options.address)
     const amountGet = web3.utils.toWei(formInput.buyAmount, 'ether');
     const tokenGive = ETHER_ADDRESS;
     const amountGive = web3.utils.toWei((formInput.buyAmount * formInput.buyPrice).toFixed(18), 'ether');
@@ -378,7 +384,7 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
 
     if ((formInput.buyAmount * formInput.buyPrice) > balance) {
         gerarMensagem('Saldo insuficiente',
-            'Não há ETH suficiente em sua conta para executar a ordem. Deposite  ' + (  (formInput.buyAmount * formInput.buyPrice)  - balance   ) + ' ou use uma quantia menor.'
+            'Não há ETH suficiente em sua conta para executar a ordem. Deposite  ' + ((formInput.buyAmount * formInput.buyPrice) - balance) + ' ou use uma quantia menor.'
             + ' Você tem atualmente ' + balance + ' Ether em sua conta.'
             , dados, events, setCarregado)
     } else {
@@ -393,11 +399,7 @@ export const makeBuyOrder = async (formInput: any, dados: IProp, events: IEvents
                 setCarregado(true)
                 window.alert('Ocorreu um erro na ordem de compra');
             })
-
-        await atualiza(dados, formInput.buyAmount, events, setCarregado,  (formInput.buyAmount * formInput.buyPrice))
-
-
-
+        await atualizaOrders(dados, formInput.buyAmount, events, setCarregado, (formInput.buyAmount * formInput.buyPrice))
     }
 }
 
@@ -434,7 +436,7 @@ export const makeSellOrder = async (formInput: any, dados: IProp, events: IEvent
             .then(async (hash: any) => {
                 console.log('then makeBuyOrder', hash)
                 console.log(hash)
-                atualiza(dados, formInput.sellAmount, events, setCarregado, amountGive)
+                atualizaOrders(dados, formInput.sellAmount, events, setCarregado, (formInput.sellAmount * formInput.buyPrice))
             });
 
     }
@@ -458,7 +460,7 @@ export async function loadOrders(exchangeContract: any, tokenContract: any, acco
     return [orders, filledOrdersDec, myOrders, myFilledOrders, cancelledOrdersOnToken, filledOrdersOnToken, allOrdersOnToken]
 }
 
-export const gerarMensagem = async (msg: string, desc: string, dados: IProp, events: IEvents, setCarregado: any ) => {
+export const gerarMensagem = async (msg: string, desc: string, dados: IProp, events: IEvents, setCarregado: any) => {
     const { setResult, setShow } = events;
 
     const result: IMensagem = {
@@ -468,15 +470,15 @@ export const gerarMensagem = async (msg: string, desc: string, dados: IProp, eve
         show: true,
         setShow: setShow,
         setCarregado: setCarregado,
-         data: dados
+        data: dados
     }
     setResult(result)
     setCarregado(false)
     setShow(true)
-    
+
 }
 
-async function atualiza(dados: any, amount: any, events: IEvents, setCarregado: any, amountGive: any) {
+async function atualizaOrders(dados: any, amount: any, events: IEvents, setCarregado: any, amountGive: any) {
     const { web3, exchange, token, account } = dados;
     let orders = await loadOrders(exchange, token, account);
     console.log(dados)
@@ -499,7 +501,7 @@ async function atualiza(dados: any, amount: any, events: IEvents, setCarregado: 
     console.log(priceChart)
     dados.priceChart = priceChart
     await gerarMensagem('Operação completada com sucesso.',
-        'Valor operação ' + amount + '  ' + dados.tokenName +' no valor de  '  + amountGive +  ' ETH ',
+        'Valor operação ' + amount + '  ' + dados.tokenName + ' no valor de  ' + amountGive + ' ETH ',
         dados, events, setCarregado)
 
 

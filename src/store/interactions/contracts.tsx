@@ -53,10 +53,10 @@ export const loadBalances = async (web3: Web3, exchange: any, token: any, accoun
 
     const [etherBalance, exchangeEtherBalance] = await loadEtherBalances(web3, exchange, account);
     const [tokenBalance, exchangeTokenBalance] = await loadTokenBalances(web3, exchange, token, account)
-  //  console.log(tokenBalance)
+    //  console.log(tokenBalance)
 
     return [parseFloat(web3.utils.fromWei(etherBalance, ETHUnit)), parseFloat(web3.utils.fromWei(exchangeEtherBalance, ETHUnit)),
-    parseFloat(web3.utils.fromWei(tokenBalance, ETHUnit)) , parseFloat(web3.utils.fromWei(exchangeTokenBalance, ETHUnit))]
+    parseFloat(web3.utils.fromWei(tokenBalance, ETHUnit)), parseFloat(web3.utils.fromWei(exchangeTokenBalance, ETHUnit))]
 }
 
 export function updateForm(hash: any, props: any) {
@@ -115,21 +115,35 @@ export const queryRegisterToken = async (web3: any, address: any) => {
         return data
     }
 }
-export function atualiza(dados: IProp, formInput: any, events: IEvents, setCarregado: any) {
+export async function atualiza(dados: IProp, formInput: any, events: IEvents, setCarregado: any, tokenName: string, operacao: string) {
     const { web3, exchange, token, account } = dados;
-    loadBalances(web3, exchange, token, account)
-        .then((hash: any) => {
-            dados = updateForm(hash, dados)
-            gerarMensagem('Operação completada com sucesso.',
-                'Valor operação ' + formInput.etherDepositAmount + '  ' + dados.tokenName,
-                dados,
-                events, setCarregado)
-        })
+    let amount = 0
+    if (tokenName === 'ETH')
+        if (operacao === "Retirada")
+            amount = formInput.etherWithdrawAmount
+        else 
+            amount = formInput.etherDepositAmount
+    else 
+        if (operacao === "Retirada")
+            amount = formInput.tokenWithdrawAmount
+        else
+            amount = formInput.tokenDepositAmount
+    let hash = await loadBalances(web3, exchange, token, account)
+    dados = updateForm(hash, dados)
+    gerarMensagem('Operação completada com sucesso.',
+        operacao + ' exchange ' + amount + '  ' + tokenName,
+        dados, events, setCarregado)
+
+    formInput.tokenDepositAmount = 0;
+    formInput.etherDepositAmount = 0;
+    formInput.tokenWithdrawAmount  = 0;
+    formInput.etherWithdrawAmount = 0;
+
 }
 
-export const depositEther = async (dados: IProp, formInput: IPropBalance, events: IEvents ) => {
+export const depositEther = async (dados: IProp, formInput: IPropBalance, events: IEvents) => {
     const { web3, exchange, token, account } = dados;
-   const {  setCarregado } = events
+    const { setCarregado } = events
 
     const amount = web3.utils.toWei(formInput.etherDepositAmount.toString(), 'ether')
 
@@ -153,17 +167,19 @@ export const depositEther = async (dados: IProp, formInput: IPropBalance, events
         .on('error', (err: any) => {
             console.log(err);
             setCarregado(true)
-            window.alert("Ororreu um erro ao executar depósito");
+            window.alert("Ocorreu um erro ao executar depósito: ") + err.message;
         })
         .then((hash: any) => {
             console.log('then depositEther: ', hash.transactionHash);
-            atualiza(dados, formInput, events, setCarregado);
+            console.log(dados)
+            console.log(formInput)
+            atualiza(dados, formInput, events, setCarregado, 'ETH', 'Depósito');
         })
 }
 
-export const withdrawEther = async (dados: IProp, formInput: IPropBalance, events: IEvents, myTotalOpenOrders: any ) => {
+export const withdrawEther = async (dados: IProp, formInput: IPropBalance, events: IEvents, myTotalOpenOrders: any) => {
     const { web3, exchange, token, account } = dados;
-    const {  setCarregado } = events
+    const { setCarregado } = events
     let balance = await exchange.methods.balanceOf(ETHER_ADDRESS, account).call()
     balance = web3.utils.fromWei(balance, 'ether')
     console.log('TOTAL OPEN ORDERS : ', myTotalOpenOrders)
@@ -199,7 +215,7 @@ export const withdrawEther = async (dados: IProp, formInput: IPropBalance, event
             gerarMensagem('Insuficient Balance',
                 'You dont have this amount of Ether in your account. You have ' + balance + ' Ether',
                 dados,
-                events,setCarregado)
+                events, setCarregado)
         }
 
     } else {
@@ -220,14 +236,14 @@ export const withdrawEther = async (dados: IProp, formInput: IPropBalance, event
             })
             .then((hash: any) => {
                 console.log('then withdrawEther', hash);
-                return atualiza(dados, formInput, events, setCarregado);
+                return atualiza(dados, formInput, events, setCarregado, "ETH", "Retirada");
             });
     }
 }
 
-export const depositToken = async (dados: IProp, formInput: IPropBalance, events: any ) => {
+export const depositToken = async (dados: IProp, formInput: IPropBalance, events: any) => {
     const { web3, exchange, token, tokenName, account } = dados;
-    const {  setCarregado } = events
+    const { setCarregado } = events
     const amount = web3.utils.toWei(formInput.tokenDepositAmount.toString(), 'ether');
     const saldo = await token.methods.balanceOf(account).call()
     let balance: number = parseFloat(web3.utils.fromWei(saldo, 'ether'))
@@ -262,15 +278,14 @@ export const depositToken = async (dados: IProp, formInput: IPropBalance, events
                     .then((hash: any) => {
                         console.log("then depositToken");
                         formInput.gas = hash.gasUsed;
-                        formInput.tokenDepositAmount = 0;
-                        atualiza(dados, formInput, events, setCarregado);
+                        atualiza(dados, formInput, events, setCarregado, tokenName, "Depósito");
                     });
             });
     }
 
 }
 
-export const withdrawToken = async (dados: IProp, formInput: IPropBalance, events: any, myTotalOpenOrders: any ) => {
+export const withdrawToken = async (dados: IProp, formInput: IPropBalance, events: any, myTotalOpenOrders: any) => {
     const { web3, exchange, token, account, tokenName } = dados;
     const { setCarregado } = events
     let balance = await exchange.methods.balanceOf(token.options.address, account).call()
@@ -330,7 +345,7 @@ export const withdrawToken = async (dados: IProp, formInput: IPropBalance, event
             })
             .then((hash: any) => {
                 console.log('then withdrawToken', hash);
-                return atualiza(dados, formInput, events, setCarregado);
+                return atualiza(dados, formInput, events, setCarregado, tokenName, "Retirada");
             });
     }
 
